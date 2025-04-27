@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
   //   return NextResponse.redirect(url)
   // }
 
-  const publicPaths = ['/login', '/signup', '/auth/confirm', '/error']
+  const publicPaths = ['/login', '/signup', '/auth/confirm', '/error', '/api']
   const path = request.nextUrl.pathname
 
   if (!user && !publicPaths.some(p => path.startsWith(p))) {
