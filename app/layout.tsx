@@ -1,40 +1,27 @@
-import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import Link from "next/link";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "AI Interview Platform",
-  description: "The fastest way to Prepare for technical interviews",
-};
-
-const geistSans = Geist({
-  display: "swap",
-  subsets: ["latin"],
-});
+export const metadata: Metadata = {
+  title: 'AI Interview Platform',
+  description: 'Practice coding interviews with AI',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
-      <body className="bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
+        <ThemeProvider>
           {children}
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -1,184 +1,178 @@
-// // app/interview/[roomId]/page.tsx
-// 'use client'
-
-// import React, { useEffect, useState } from 'react'
-// import { useParams, useSearchParams } from 'next/navigation'
-// import axios from 'axios'
-// import ReactMarkdown from 'react-markdown'
-// import MonacoEditor from '@monaco-editor/react'
-// import { Button } from '@/components/ui/button'
-// import QuestionDisplay from '@/components/QuestionDisplay'
-// import Agent from '@/components/Agent'
-
-// interface Question {
-//   title:     string
-//   body_md:   string
-//   boilercode:string
-// }
-
-// export default function InterviewRoomPage() {
-//   const { roomId }        = useParams()!
-//   const questionId        = useSearchParams().get('questionId')!
-//   const [question, setQuestion] = useState<Question | null>(null)
-//   const [loading, setLoading]   = useState<boolean>(true)
-
-//   useEffect(() => {
-//     async function loadQuestion() {
-//       try {
-//         const { data } = await axios.get<Question>(`/api/interview/${roomId}`)
-//         setQuestion(data)
-//       } catch (err) {
-//         console.error(err)
-//       } finally {
-//         setLoading(false)
-//       }
-//     }
-//     loadQuestion()
-//   }, [roomId])
-
-//   if (loading) return <p className="p-4">Loading question…</p>
-//   if (!question) return <p className="p-4 text-red-600">Question not found.</p>
-
-//   return (
-//     <div className="flex flex-col h-screen">
-//       <header className="p-4 border-b bg-white">
-//         <h1 className="text-2xl font-bold">{question.title}</h1>
-//       </header>
-//       <main className="flex-1 overflow-auto p-6 space-y-6 bg-gray-50">
-//         <div className="prose max-w-none">
-//           <QuestionDisplay markdown={question.body_md}/>
-//         </div>
-//         <div>
-//           <MonacoEditor
-//             height="300px"
-//             defaultLanguage="cpp"
-//             defaultValue={question.boilercode}
-//             options={{ automaticLayout: true }}
-//           />
-//         </div>
-//         <div className="text-right">
-//           <Button onClick={() => alert('Submit handler coming next!')}>
-//             Submit Code
-//           </Button>
-//         </div>
-//       </main>
-//       <Agent question={question}/>
-//     </div>
-//   )
-// }
-// app/interview/[roomId]/page.tsx
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
+import { useParams } from 'next/navigation'
 import axios from 'axios'
-import ReactMarkdown from 'react-markdown'
 import MonacoEditor from '@monaco-editor/react'
+import QuestionDisplay from '@/components/QuestionDisplay'
 import Agent from '@/components/Agent'
+import { Button } from '@/components/ui/button'
+import { sanitize } from '@/lib/utils'
 
 interface Question {
   title:     string
   body_md:   string
   boilercode:string
+  company_id:   string
 }
 
 export default function InterviewRoomPage() {
-  const { roomId }        = useParams()!
-  const questionId        = useSearchParams().get('questionId')!
+  const { roomId } = useParams()!
   const [question, setQuestion] = useState<Question | null>(null)
   const [loading, setLoading]   = useState(true)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
+  const [error, setError]       = useState<string | null>(null)
 
-  // Load question
+  // --- Fetch question once ---
   useEffect(() => {
-    ;(async () => {
-      try {
-        const { data } = await axios.get<Question>(`/api/interview/${roomId}`)
-        setQuestion(data)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoading(false)
-      }
-    })()
+    axios.get<Question>(`/api/interview/${roomId}`)
+      .then(r => setQuestion(r.data))
+      .catch((e) => {
+        console.error('Failed to load question:', e)
+        setError('Could not load question.')
+      })
+      .finally(() => setLoading(false))
   }, [roomId])
 
-  // Start local camera preview
+  // --- Local camera setup ---
+  const videoRef  = useRef<HTMLVideoElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+
   useEffect(() => {
-    let stream: MediaStream | null = null
-
-    const startCamera = async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'user' },
-          audio: false 
-        })
-        streamRef.current = stream
-        
-        const video = videoRef.current
-        if (video) {
-          video.srcObject = stream
-          await video.play()
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error)
+    let mounted = true
+    ;(async () => {
+      // stop any prior stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop())
+        streamRef.current = null
       }
-    }
 
-    startCamera()
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' }, audio: false
+        })
+        if (!mounted) {
+          stream.getTracks().forEach(t => t.stop())
+          return
+        }
+        streamRef.current = stream
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
+          videoRef.current.muted = true
+          videoRef.current.playsInline = true
+          // attempt playback once ready
+          videoRef.current.addEventListener(
+            'loadedmetadata',
+            () => {
+              videoRef.current!
+                .play()
+                .catch(() => {
+                  videoRef.current!.muted = true
+                  videoRef.current!.play().catch(console.error)
+                })
+            },
+            { once: true }
+          )
+        }
+      } catch (e) {
+        console.error('Error accessing camera:', e)
+      }
+    })()
 
-    // Cleanup function
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop())
+      mounted = false
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop())
+        streamRef.current = null
       }
     }
   }, [])
 
-  if (loading) return <div className="p-6">Loading…</div>
-  if (!question) return <div className="p-6 text-red-600">Question not found.</div>
+  // --- Timer (mm:ss) ---
+  const [seconds, setSeconds] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000)
+    return () => clearInterval(id)
+  }, [])
+  const mins = String(Math.floor(seconds / 60)).padStart(2, '0')
+  const secs = String(seconds % 60).padStart(2, '0')
+  const timer = `${mins}:${secs}`
+
+  // --- Editor ---
+  const [editorContent, setEditorContent] = useState<string>(question?.boilercode || '')
+  const [submitCount, setSubmitCount]     = useState(0)
+
+  // reset editor default once question arrives
+  useEffect(() => {
+    if (question) {
+      setEditorContent(question.boilercode)
+    }
+  }, [question])
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Left: Question & Editor (75%) */}
-      <div className="w-3/4 flex flex-col divide-y divide-gray-200 overflow-hidden">
-        {/* Question Preview */}
-        <div className="flex-1 overflow-auto bg-white p-6">
-          <h2 className="text-xl font-semibold mb-4">Question</h2>
-          <div className="prose prose-sm max-w-none">
-            <ReactMarkdown>{question.body_md}</ReactMarkdown>
-          </div>
-        </div>
-        {/* Code Editor */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-white p-6">
-          <h2 className="text-xl font-semibold mb-4">Solution</h2>
-          <div className="flex-1">
-            <MonacoEditor
-              height="100%"
-              defaultLanguage="cpp"
-              defaultValue={question.boilercode}
-              options={{ automaticLayout: true, minimap: { enabled: false } }}
-              theme='vs-dark'
-            />
-          </div>
-        </div>
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Top Bar */}
+      <div className="rounded-t-lg bg-white shadow flex items-center justify-between px-6 py-3 m-3 mb-0 text-black">
+        <h1 className="text-xl font-semibold">{question?.company_id?.toUpperCase()} – Interview</h1>
+        <div className="text-lg font-mono">{timer}</div>
       </div>
 
-      {/* Right: Video & AI Assistant (25%) */}
-      <div className="w-1/4 flex flex-col divide-y divide-gray-200 overflow-hidden">
-        {/* User Video */}
-        <div className="flex-1 bg-black">
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            className="w-full h-full object-cover"
-          />
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden gap-6 p-6">
+        {/* Left Panel */}
+        <div className="flex flex-col flex-1 overflow-hidden gap-4">
+          {/* Question Card */}
+          <div className="bg-white text-black rounded-lg shadow p-4 h-1/3 overflow-auto">
+            {loading ? (
+              <p>Loading question…</p>
+            ) : error ? (
+              <p className="text-red-600">{error}</p>
+            ) : (
+              <QuestionDisplay markdown={question!.body_md} />
+            )}
+          </div>
+          {/* Code Editor Card */}
+          <div className="bg-white rounded-lg shadow p-4 flex-1 overflow-auto flex flex-col">
+            {!loading && !error && (
+              <MonacoEditor
+                height="100%"
+                defaultLanguage="cpp"
+                defaultValue={question!.boilercode}
+                value={editorContent}
+                onChange={(v) => setEditorContent(v || '')}
+                options={{
+                  automaticLayout: true,
+                  minimap: { enabled: false },
+                }}
+                theme="vs-dark"
+              />
+            )}
+            <div className="mt-4 text-right">
+              <Button onClick={() => {
+                    // bump the counter to let Agent know we submitted
+                    setSubmitCount((c) => c + 1)
+                  }}>
+                Submit Code
+              </Button>
+            </div>
+          </div>
         </div>
-        {/* AI Assistant */}
-        <div className="flex-1 bg-white p-6">
-          <Agent question={question} />
+
+        {/* Right Panel */}
+        <div className="w-1/4 flex flex-col overflow-hidden gap-4">
+          {/* Candidate Camera Card */}
+          <div className="bg-white rounded-lg shadow flex-1 overflow-hidden flex items-center justify-center p-4">
+            <video
+              ref={videoRef}
+              className="w-full h-full object-cover rounded-lg"
+              autoPlay
+              muted
+              playsInline
+            />
+          </div>
+          {/* AI Assistant Card */}
+          <div className="bg-white rounded-lg shadow p-4 flex-1 overflow-auto content-center">
+            <Agent question={question} code={sanitize(editorContent)} submitCount={submitCount}/>
+          </div>
         </div>
       </div>
     </div>

@@ -23,8 +23,8 @@ export default function StartInterviewPage() {
         companyId,
         experience,
       })
-      const { interviewId, questionId } = data
-      router.push(`/interview/${interviewId}?questionId=${questionId}`)
+      const { interviewId } = data
+      router.push(`/interview/${interviewId}`)
     } catch (err) {
       console.error(err)
     } finally {

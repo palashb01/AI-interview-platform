@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: { interviewId:
   // 2. fetch question details
   const { data: q, error: qErr } = await supabase
     .from('questions')
-    .select('title, body_md, boilercode')
+    .select('title, body_md, boilercode, company_id')
     .eq('id', iv.question_id)
     .single()
   if (qErr || !q) {
