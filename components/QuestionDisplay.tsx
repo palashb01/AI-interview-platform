@@ -11,7 +11,7 @@ import rehypeStringify from 'rehype-stringify'
 import type { Element } from 'hast'
 
 interface QuestionDisplayProps {
-  markdown: string
+  markdown: string | undefined
 }
 
 export default function QuestionDisplay({ markdown }: QuestionDisplayProps) {

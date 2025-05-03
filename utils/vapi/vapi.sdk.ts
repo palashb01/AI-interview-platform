@@ -3,8 +3,10 @@ import Vapi from "@vapi-ai/web";
 
 const interviewer: CreateAssistantDTO = {
     name: "Interviewer",
+    silenceTimeoutSeconds: 1700,
+    maxDurationSeconds: 2400,
     firstMessage:
-      "Hello! Thank you for taking the time to speak with me today. I'm a senior software engineer at {{companyId}} and excited to interview you for the role of Software Developer.], before we begin can you please introduce yourself.",
+      "Hello! Thank you for taking the time to speak with me today. I'm a senior software engineer at {{companyId}} and excited to interview you for the role of Software Developer, before we begin can you please introduce yourself.",
     transcriber: {
       provider: "deepgram",
       model: "nova-2",
@@ -37,11 +39,11 @@ const interviewer: CreateAssistantDTO = {
   - Don't give hints if the candidate is able to reach the correct approach.
   - Ask the candidate the time and space complexity of their approaches.
   - The interview would be Conducted in C++ language and it would be of leetcode style function
-  completion interview, you already have a boilerCode for the question to complete, explain to
-  finish the function.
+  completion interview, just tell the candidate to complete the function.
   - Ask cross questions to the candidate to check their understanding of the approach.
 
   Very important point:
+  - Don't recite the boilercode function to the candidate, just say that you have a function to complete and give them the question.
   - Once the approach is finialized ask the candidate to type the code in the editor and submit the code with submit button.
   - Once the candidate says they have submitted the code, ask them to wait for a moment while you check the code.
   - Wait for a while the system will send you the message with mistake if the code is correct or not based on that interact with the user.

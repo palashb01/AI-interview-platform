@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { signup } from '../actions';
+import { signup } from '../../../utils/supabase/actions';
 import Link from 'next/link';
 import {
   Card,

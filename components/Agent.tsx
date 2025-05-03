@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import Image            from 'next/image'
 import { Button }       from '@/components/ui/button'
 import { cn, sanitize } from '@/lib/utils'
 import { interviewer, vapi } from '@/utils/vapi/vapi.sdk'
 import { useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 enum CallStatus {
   INACTIVE   = 'INACTIVE',
@@ -25,6 +26,7 @@ interface AgentProps {
   question: Question | null
   code:     string
   submitCount: number
+  onStarted?:   () => void 
 }
 
 interface SavedMessage {
@@ -32,23 +34,26 @@ interface SavedMessage {
     content: string;
 }
 
-export default function Agent({ question, code, submitCount }: AgentProps) {
+export const Agent = forwardRef(function Agent(
+  { question, code, submitCount, onStarted }: AgentProps,
+  ref: React.Ref<{ startCall: () => void, endCall: () => void }>
+) {
   const {roomId} = useParams();
   const [callStatus, setCallStatus]   = useState<CallStatus>(CallStatus.INACTIVE)
   const [isSpeaking, setIsSpeaking]   = useState(false)
   const [messages, setMessages] = useState<SavedMessage[]>([]);
-  const [lastMessage, setLastMessage] = useState<string>("");
-
-  
+  const router = useRouter();
 
     useEffect(()=>{
     const onCallStart = () => {
         setCallStatus(CallStatus.ACTIVE);
+        if (onStarted) onStarted()
     };
   
     const onCallEnd = () => {
         console.log(messages);
         setCallStatus(CallStatus.FINISHED);
+        localStorage.setItem(`interview-${roomId}-completed`, 'true')
     };
 
     const onMessage = (message: Message) => {
@@ -90,10 +95,6 @@ export default function Agent({ question, code, submitCount }: AgentProps) {
     }, []);
 
     useEffect(()=>{
-        if(messages.length>0){
-            setLastMessage(messages[(messages.length-1)].content);
-        }
-
         if(callStatus===CallStatus.FINISHED){
             console.log({"The messages":messages});
             console.log("The call has been ended");
@@ -113,6 +114,7 @@ export default function Agent({ question, code, submitCount }: AgentProps) {
   }
 
   const handleEnd = () => {
+    console.log("Ending call called handleEnd");
     vapi.stop()
     setCallStatus(CallStatus.FINISHED)
   }
@@ -187,20 +189,25 @@ export default function Agent({ question, code, submitCount }: AgentProps) {
         // optionally read the JSON if you need it:
         // const feedback = await res.json()
         // now send the user to /interview/[id]/feedback
-        // router.push(`/interview/${interviewId}/feedback`)
+        router.push(`/interview/${roomId}/feedback`)
       } catch (err) {
         console.error('Feedback API error:', err)
         // Even on error, you might still navigate:
-        // router.push(`/interview/${interviewId}/feedback?error=true`)
+        router.push(`/interview/${roomId}/feedback?error=true`)
       }
     })()
   }, [callStatus])
+
+  useImperativeHandle(ref, () => ({
+    startCall: handleCall,
+    endCall:   handleEnd,
+  }), [question])
 
   return (
     <div className="flex flex-col items-center space-y-4">
       <div className="relative">
         <Image
-          src={'/assets/images/interviewer.jpeg'}
+          src="/assets/images/interviewer.jpeg"
           width={100}
           height={100}
           alt="AI Assistant"
@@ -214,19 +221,18 @@ export default function Agent({ question, code, submitCount }: AgentProps) {
           />
         )}
       </div>
+
       <Button
         variant={callStatus === CallStatus.ACTIVE ? 'destructive' : 'outline'}
-        onClick={
-          callStatus === CallStatus.ACTIVE ? handleEnd : handleCall
-        }
+        onClick={callStatus === CallStatus.ACTIVE ? handleEnd : handleCall}
         disabled={callStatus === CallStatus.CONNECTING}
       >
         {callStatus === CallStatus.CONNECTING
           ? 'Connecting…'
           : callStatus === CallStatus.ACTIVE
-          ? 'End'
-          : 'Call'}
+          ? 'End Call'
+          : 'Start Call'}
       </Button>
     </div>
   )
-}
+})

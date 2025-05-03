@@ -32,9 +32,3 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json(object)
 }
-
-// Use cases for gemini in our case:
-// 1. it should tell with the given question and submitted solution if it is correct or not
-// and if it is not correct then tell the mistake.
-// 2. once the interview is over all the messages with the submitted code will be given to gemini and based on few parameters given
-// it should give points out of 10 to the candidates and we will save it in the database for the user to fetch later.

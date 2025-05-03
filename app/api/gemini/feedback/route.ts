@@ -3,11 +3,6 @@ import { createClient } from '../../../../utils/supabase/server'
 import { generateObject } from 'ai'
 import { google } from '@ai-sdk/google'
 import { feedbackSchema } from '@/constants'
-// Use cases for gemini in our case:
-// 1. it should tell with the given question and submitted solution if it is correct or not
-// and if it is not correct then tell the mistake.
-// 2. once the interview is over all the messages with the submitted code will be given to gemini and based on few parameters given
-// it should give points out of 10 to the candidates and we will save it in the database for the user to fetch later.
 
 export async function POST(req: NextRequest) {
     const { messages, question, code, interviewId } = await req.json()
@@ -19,12 +14,13 @@ export async function POST(req: NextRequest) {
       ) {
         return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
     }
-    const supabase = await createClient()
     console.log('↪️  [api/gemini/feedback] payload:', { messages, question, code, interviewId })
     const prompt = `
         You are an expert technical coding interview reviewer, based on the below transacript of the conversation between user and assistant
-        with the submitted coding code by the user, please rate the candidate on a scale of 0 to 10 for each of the following parameters and also suggest some
-        improvements, the interview style was of leetcode style function completion interview in c++.
+        with the submitted coding code by the user, please rate the candidate on a scale of 0 to 10 for each of the following parameters and also suggest some improvements, the interview style was of leetcode style function completion interview in c++.
+        Important point: 
+        - The function signature is provided by the interviewer not the candidate so consider the implementation for review.
+        - the function signature also says implementation goes here don't say these things in improvement only conside the implementation, if it is empty say code is empty.
         Given:
 
         • The transcript of the live interview (role/content pairs):
@@ -82,6 +78,10 @@ export async function POST(req: NextRequest) {
         ratings:      feedback.ratings,      // JSONB column
         improvements: feedback.improvements, // TEXT column
       })
+    await supabase
+      .from('interviews')
+      .update({ finished: true })
+      .eq('id', interviewId)
     } catch (dbErr) {
         console.error('DB insert error:', dbErr)
         // We still return feedback even if the DB insert fails
