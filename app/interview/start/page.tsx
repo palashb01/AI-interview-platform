@@ -1,46 +1,46 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import axios from 'axios'
-import { Button } from '@/components/ui/button'
-import { Input }  from '@/components/ui/input'
-import { Label }  from '@/components/ui/label'
-import { companies } from '@/lib/companies'
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { companies } from "@/lib/companies";
 
 export default function StartInterviewPage() {
-  const router = useRouter()
-  const [companyId, setCompanyId]   = useState('')
-  const [experience, setExperience] = useState('')
-  const [loading, setLoading]       = useState(false)
-  const [error, setError]           = useState('')
+  const router = useRouter();
+  const [companyId, setCompanyId] = useState("");
+  const [experience, setExperience] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Validate numeric experience
   useEffect(() => {
-    if (experience === '') {
-      setError('Experience is required')
+    if (experience === "") {
+      setError("Experience is required");
     } else if (!/^\d+$/.test(experience)) {
-      setError('Please enter a valid whole number')
+      setError("Please enter a valid whole number");
     } else {
-      setError('')
+      setError("");
     }
-  }, [experience])
+  }, [experience]);
 
   const handleStart = async () => {
-    if (!companyId || error) return
-    setLoading(true)
+    if (!companyId || error) return;
+    setLoading(true);
     try {
-      const { data } = await axios.post('/api/interview/start', {
+      const { data } = await axios.post("/api/interview/start", {
         companyId,
         experience: parseInt(experience, 10),
-      })
-      router.push(`/interview/${data.interviewId}`)
+      });
+      router.push(`/interview/${data.interviewId}`);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-foreground p-6">
@@ -110,8 +110,8 @@ export default function StartInterviewPage() {
           />
           {error && (
             <p className="text-sm text-destructive dark:text-red-400">
-            {error}
-          </p>
+              {error}
+            </p>
           )}
         </div>
 
@@ -121,9 +121,9 @@ export default function StartInterviewPage() {
           disabled={!companyId || !!error || loading}
           className="w-full"
         >
-          {loading ? 'Starting…' : 'Start Interview'}
+          {loading ? "Starting…" : "Start Interview"}
         </Button>
       </div>
     </div>
-  )
+  );
 }

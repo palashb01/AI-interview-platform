@@ -2,28 +2,28 @@ import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import Vapi from "@vapi-ai/web";
 
 const interviewer: CreateAssistantDTO = {
-    name: "Interviewer",
-    silenceTimeoutSeconds: 1700,
-    maxDurationSeconds: 2400,
-    firstMessage:
-      "Hello! Thank you for taking the time to speak with me today. I'm a senior software engineer at {{companyId}} and excited to interview you for the role of Software Developer, before we begin can you please introduce yourself.",
-    transcriber: {
-      provider: "deepgram",
-      model: "nova-2",
-      language: "en",
-    },
-    voice: {
-      provider: "vapi",
-      voiceId: "Neha",
-      speed: 1.0,
-    },
-    model: {
-      provider: "openai",
-      model: "chatgpt-4o-latest",
-      messages: [
-        {
-          role: "system",
-          content: `You are a senior software engineer at {{companyId}} conducting a real-time technical coding interview with a candidate. Your goal is to assess their approach and thinking ability and correct them if their approach is wrong.
+  name: "Interviewer",
+  silenceTimeoutSeconds: 1700,
+  maxDurationSeconds: 2400,
+  firstMessage:
+    "Hello! Thank you for taking the time to speak with me today. I'm a senior software engineer at {{companyId}} and excited to interview you for the role of Software Developer, before we begin can you please introduce yourself.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "en",
+  },
+  voice: {
+    provider: "vapi",
+    voiceId: "Neha",
+    speed: 1.0,
+  },
+  model: {
+    provider: "openai",
+    model: "chatgpt-4o-latest",
+    messages: [
+      {
+        role: "system",
+        content: `You are a senior software engineer at {{companyId}} conducting a real-time technical coding interview with a candidate. Your goal is to assess their approach and thinking ability and correct them if their approach is wrong.
 
     - Start the interview by asking the candidate their introduction and then proceed to the technical part.
 
@@ -79,11 +79,11 @@ const interviewer: CreateAssistantDTO = {
   - Be sure to be professional and polite.
   - Keep all your responses short and simple. Use official language, but be kind and welcoming.
   - This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
-        },
-      ],
-    },
-  };
+      },
+    ],
+  },
+};
 
 const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN!);
 
-export {interviewer,vapi};
+export { interviewer, vapi };

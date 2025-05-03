@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function ErrorPage() {
   return (
@@ -12,7 +12,7 @@ export default function ErrorPage() {
       <motion.div
         initial={{ scale: 0.5, rotate: -45, opacity: 0 }}
         animate={{ scale: 1, rotate: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 5 }}
+        transition={{ type: "spring", stiffness: 500, damping: 5 }}
         className="w-full max-w-md mx-4"
       >
         <Card className="text-center">
@@ -27,8 +27,8 @@ export default function ErrorPage() {
                 delay: 0.2,
                 duration: 1,
                 times: [0, 0.5, 0.8, 1],
-                type: 'tween',
-                ease: 'easeOut',
+                type: "tween",
+                ease: "easeOut",
               }}
             >
               <CardTitle className="text-4xl">😵‍💫 Whoopsie Daisy!</CardTitle>
@@ -39,7 +39,12 @@ export default function ErrorPage() {
               className="mb-4 text-lg"
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4, type: 'spring', stiffness: 150, damping: 12 }}
+              transition={{
+                delay: 0.4,
+                type: "spring",
+                stiffness: 150,
+                damping: 12,
+              }}
             >
               Looks like our code monkeys tripped over a banana peel.
             </motion.p>
@@ -47,7 +52,12 @@ export default function ErrorPage() {
               className="mb-6 italic text-sm text-gray-600"
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5, type: 'spring', stiffness: 150, damping: 12 }}
+              transition={{
+                delay: 0.5,
+                type: "spring",
+                stiffness: 150,
+                damping: 12,
+              }}
             >
               But don’t worry, they’re picking themselves up as we speak.
             </motion.p>
@@ -57,9 +67,9 @@ export default function ErrorPage() {
               transition={{
                 delay: 0.6,
                 duration: 0.8,
-                type: 'tween',
+                type: "tween",
                 times: [0, 0.5, 0.9, 1],
-                ease: 'easeOut',
+                ease: "easeOut",
               }}
             >
               <Button asChild className="w-full">

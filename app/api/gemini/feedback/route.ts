@@ -1,21 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '../../../../utils/supabase/server'
-import { generateObject } from 'ai'
-import { google } from '@ai-sdk/google'
-import { feedbackSchema } from '@/constants'
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "../../../../utils/supabase/server";
+import { generateObject } from "ai";
+import { google } from "@ai-sdk/google";
+import { feedbackSchema } from "@/constants";
 
 export async function POST(req: NextRequest) {
-    const { messages, question, code, interviewId } = await req.json()
-    if (
-        !Array.isArray(messages) ||
-        typeof question    !== 'string' ||
-        typeof code        !== 'string' ||
-        typeof interviewId !== 'string'
-      ) {
-        return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
-    }
-    console.log('↪️  [api/gemini/feedback] payload:', { messages, question, code, interviewId })
-    const prompt = `
+  const { messages, question, code, interviewId } = await req.json();
+  if (
+    !Array.isArray(messages) ||
+    typeof question !== "string" ||
+    typeof code !== "string" ||
+    typeof interviewId !== "string"
+  ) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+  console.log("↪️  [api/gemini/feedback] payload:", {
+    messages,
+    question,
+    code,
+    interviewId,
+  });
+  const prompt = `
         You are an expert technical coding interview reviewer, based on the below transacript of the conversation between user and assistant
         with the submitted coding code by the user, please rate the candidate on a scale of 0 to 10 for each of the following parameters and also suggest some improvements, the interview style was of leetcode style function completion interview in c++.
         Important point: 
@@ -24,7 +29,7 @@ export async function POST(req: NextRequest) {
         Given:
 
         • The transcript of the live interview (role/content pairs):
-        ${messages.map(m => `${m.role}: ${m.content}`).join('\n')}
+        ${messages.map((m) => `${m.role}: ${m.content}`).join("\n")}
 
         • The original question:
         ${question}
@@ -46,47 +51,45 @@ export async function POST(req: NextRequest) {
         },
         "improvements": "…a few sentences of concrete suggestions…"
         }
-        `.trim()
+        `.trim();
 
   // 3) Generate the structured feedback via Gemini
-  const {object: raw} = await generateObject({
+  const { object: raw } = await generateObject({
     model: google("gemini-2.0-flash-001", {
-        structuredOutputs: false,
-      }),
+      structuredOutputs: false,
+    }),
     prompt,
     schema: feedbackSchema,
     system: `You are an expert technical coding interview reviewer, based on the below transacript of the conversation between user and assistant
         with the submitted coding code by the user, please rate the candidate on a scale of 0 to 10 for each of the following parameters and also suggest some
-        improvements, the interview style was of leetcode style function completion interview in c++.`
-    })
-    const parsed = feedbackSchema.safeParse(raw)
-    if (!parsed.success) {
-        console.error('Feedback schema mismatch:', parsed.error, raw)
-        return NextResponse.json(
-            { error: 'Model returned invalid feedback' },
-            { status: 502 }
-        )
-    }
+        improvements, the interview style was of leetcode style function completion interview in c++.`,
+  });
+  const parsed = feedbackSchema.safeParse(raw);
+  if (!parsed.success) {
+    console.error("Feedback schema mismatch:", parsed.error, raw);
+    return NextResponse.json(
+      { error: "Model returned invalid feedback" },
+      { status: 502 },
+    );
+  }
 
-    const feedback = parsed.data
-    try {
-    const supabase = await createClient()
+  const feedback = parsed.data;
+  try {
+    const supabase = await createClient();
+    await supabase.from("interview_feedback").insert({
+      interview_id: interviewId,
+      ratings: feedback.ratings, // JSONB column
+      improvements: feedback.improvements, // TEXT column
+    });
     await supabase
-      .from('interview_feedback')
-      .insert({
-        interview_id: interviewId,
-        ratings:      feedback.ratings,      // JSONB column
-        improvements: feedback.improvements, // TEXT column
-      })
-    await supabase
-      .from('interviews')
+      .from("interviews")
       .update({ finished: true })
-      .eq('id', interviewId)
-    } catch (dbErr) {
-        console.error('DB insert error:', dbErr)
-        // We still return feedback even if the DB insert fails
-    }
+      .eq("id", interviewId);
+  } catch (dbErr) {
+    console.error("DB insert error:", dbErr);
+    // We still return feedback even if the DB insert fails
+  }
 
   // 6) Return the structured feedback
-  return NextResponse.json(feedback)
+  return NextResponse.json(feedback);
 }

@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { signup } from '../../../utils/supabase/actions';
-import Link from 'next/link';
+import React from "react";
+import { signup } from "../../../utils/supabase/actions";
+import Link from "next/link";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function SignupPage() {
   return (
@@ -20,7 +20,9 @@ export default function SignupPage() {
       <Card className="w-full max-w-md mx-4">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>Create a new account to start your interview journey.</CardDescription>
+          <CardDescription>
+            Create a new account to start your interview journey.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
