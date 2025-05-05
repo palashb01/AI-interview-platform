@@ -16,4 +16,4 @@ export function CameraCard({ videoRef }: CameraCardProps) {
       />
     </div>
   );
-} 
+}

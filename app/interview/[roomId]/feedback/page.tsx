@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { LoadingSpinner } from "@/components/ui/loadingSpinner";
 
 // --- A tiny Circular Progress component ---
 function CircularProgress({ label, value }: { label: string; value: number }) {
@@ -80,7 +81,9 @@ export default function FeedbackPage() {
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500">Loading feedback…</div>
+      <div className="p-6 text-center text-gray-500">
+        <LoadingSpinner text="Loading Feedback" />
+      </div>
     );
   }
 

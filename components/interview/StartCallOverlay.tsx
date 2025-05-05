@@ -13,4 +13,4 @@ export function StartCallOverlay({ onStartCall }: StartCallOverlayProps) {
       <Button onClick={onStartCall}>Start Call</Button>
     </div>
   );
-} 
+}

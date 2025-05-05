@@ -18,4 +18,4 @@ export function QuestionCard({ loading, error, question }: QuestionCardProps) {
       )}
     </div>
   );
-} 
+}

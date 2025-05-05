@@ -12,7 +12,7 @@ import { cn, sanitize } from "@/lib/utils";
 import { interviewer, vapi } from "@/utils/vapi/vapi.sdk";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import {CallStatus} from "@/types/index"
+import { CallStatus } from "@/types/index";
 
 interface Question {
   title: string;

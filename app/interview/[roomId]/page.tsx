@@ -24,6 +24,7 @@ export default function InterviewRoomPage() {
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [interviewActive, setInterviewActive] = useState(false);
   const { theme } = useTheme();
   const agentRef = useRef<{
     startCall: () => void;
@@ -115,17 +116,28 @@ export default function InterviewRoomPage() {
   // --- Timer ---
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const timer = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+    if (!interviewActive) return;
+    setSeconds(0);
 
+    const id = setInterval(() => {
+      setSeconds((s) => s + 1);
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [interviewActive]);
+
+  useEffect(() => {
+    if (seconds >= 2400 && interviewActive) {
+      agentRef.current?.endCall();
+    }
+  }, [seconds, interviewActive]);
+
+  const timer = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
   // --- Editor state ---
   const [editorContent, setEditorContent] = useState<string>(
     question?.boilercode || "",
   );
   const [submitCount, setSubmitCount] = useState(0);
-  const [interviewActive, setInterviewActive] = useState(false);
 
   useEffect(() => {
     if (question) {
@@ -145,7 +157,9 @@ export default function InterviewRoomPage() {
       <div className="flex flex-1 gap-6 p-6 overflow-hidden">
         <div className="relative flex flex-col flex-1 gap-4 min-h-0">
           {!interviewActive && (
-            <StartCallOverlay onStartCall={() => agentRef.current?.startCall()} />
+            <StartCallOverlay
+              onStartCall={() => agentRef.current?.startCall()}
+            />
           )}
 
           <QuestionCard loading={loading} error={error} question={question} />
