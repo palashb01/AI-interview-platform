@@ -1,24 +1,36 @@
+// components/TopBar.tsx
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { Sun, Moon } from "lucide-react";
-import Image from "next/image";
+import { Button } from "./ui/button";
+import { signOut } from "@/utils/supabase/actions";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
-import { signOut } from "@/utils/supabase/actions";
-import { Button } from "./ui/button";
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { LogOut } from "lucide-react";
 
 export default function TopBar() {
   const { theme, toggleTheme } = useTheme();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? null);
+    });
+  }, []);
 
   return (
     <header className="flex items-center justify-between bg-white dark:bg-gray-800 px-6 py-3 shadow">
-      {/* left: logo + name */}
+      {/* Left: logo + name */}
       <Link href="/" className="flex items-center space-x-2">
         <Image
           src="/assets/images/logo.png"
@@ -31,9 +43,8 @@ export default function TopBar() {
         </span>
       </Link>
 
-      {/* right: theme toggle + user menu */}
+      {/* Right: theme toggle + auth buttons */}
       <div className="flex items-center space-x-4">
-        {/* theme toggle */}
         <button
           onClick={toggleTheme}
           className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
@@ -45,23 +56,39 @@ export default function TopBar() {
           )}
         </button>
 
-        {/* user avatar + dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Image
-              src="/assets/images/avatar.png"
-              alt="User Avatar"
-              width={32}
-              height={32}
-              className="rounded-full cursor-pointer"
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-30">
-            <DropdownMenuItem asChild>
-              <Button onClick={signOut}>Logout</Button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {userEmail ? (
+          // signed-in: avatar that logs out on click
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Image
+                src="/assets/images/avatar.png"
+                alt="Avatar"
+                width={32}
+                height={32}
+                className="rounded-full cursor-pointer"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                className="text-red-600 dark:text-red-400 cursor-pointer"
+                onClick={() => signOut()}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          // not signed-in: Log In / Sign Up
+          <>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/login">Log In</Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/signup">Sign Up</Link>
+            </Button>
+          </>
+        )}
       </div>
     </header>
   );

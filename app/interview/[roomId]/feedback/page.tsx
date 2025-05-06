@@ -5,8 +5,25 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { LoadingSpinner } from "@/components/ui/loadingSpinner";
+import { motion } from "framer-motion";
+import { ArrowRight, Star, TrendingUp, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
-// --- A tiny Circular Progress component ---
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+// --- Enhanced Circular Progress component ---
 function CircularProgress({ label, value }: { label: string; value: number }) {
   const radius = 36;
   const stroke = 6;
@@ -15,7 +32,7 @@ function CircularProgress({ label, value }: { label: string; value: number }) {
   const dashOffset = circumference - (value / 10) * circumference;
 
   return (
-    <div className="flex flex-col items-center">
+    <motion.div variants={fadeInUp} className="flex flex-col items-center">
       <div className="relative">
         <svg height={radius * 2} width={radius * 2}>
           {/* background circle */}
@@ -29,27 +46,40 @@ function CircularProgress({ label, value }: { label: string; value: number }) {
             cy={radius}
           />
           {/* foreground progress */}
-          <circle
+          <motion.circle
+            initial={{ strokeDashoffset: circumference }}
+            animate={{ strokeDashoffset: dashOffset }}
+            transition={{ duration: 1, ease: "easeOut" }}
             stroke="currentColor"
             className="text-indigo-500"
             fill="transparent"
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={`${circumference} ${circumference}`}
-            strokeDashoffset={dashOffset}
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            style={{ transition: "stroke-dashoffset 0.6s ease" }}
           />
         </svg>
         {/* center number */}
-        <div className="absolute inset-0 flex items-center justify-center font-mono text-lg">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="absolute inset-0 flex items-center justify-center font-mono text-lg font-bold"
+        >
           {value}
-        </div>
+        </motion.div>
       </div>
-      <div className="mt-2 text-sm text-center capitalize">{label}</div>
-    </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="mt-2 text-sm text-center capitalize font-medium"
+      >
+        {label}
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -81,55 +111,141 @@ export default function FeedbackPage() {
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500">
-        <LoadingSpinner text="Loading Feedback" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <LoadingSpinner text="Loading Your Feedback" />
       </div>
     );
   }
 
   if (!feedback) {
     return (
-      <div className="p-6 text-center text-red-600">No feedback found.</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center space-y-4">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="text-red-600 text-xl"
+          >
+            No feedback found.
+          </motion.div>
+          <Link href="/interview/start">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
+            >
+              Start New Interview
+            </motion.button>
+          </Link>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold animate-fadeIn">Interview Feedback</h1>
-
-      {/* Ratings grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
-        {Object.entries(feedback.ratings).map(([key, val]) => (
-          <div
-            key={key}
-            className="
-              bg-white dark:bg-gray-800
-              border border-gray-200 dark:border-gray-700
-              rounded-lg p-4
-              shadow-lg
-              animate-fadeIn
-            "
-          >
-            <CircularProgress label={key} value={val} />
-          </div>
-        ))}
-      </div>
-
-      {/* Suggestions / Improvements */}
-      <div
-        className="
-          bg-white dark:bg-gray-800
-          border border-gray-200 dark:border-gray-700
-          rounded-lg p-6
-          shadow-lg
-          animate-fadeIn
-        "
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 py-12 px-6">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-4xl mx-auto space-y-8"
       >
-        <h2 className="text-2xl font-semibold mb-2">Suggestions</h2>
-        <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
-          {feedback.improvements}
-        </p>
-      </div>
+        <div className="text-center space-y-4">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600"
+          >
+            Interview Feedback
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-gray-600 dark:text-gray-400"
+          >
+            Here's how you performed in your interview
+          </motion.p>
+        </div>
+
+        {/* Ratings grid */}
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6"
+        >
+          {Object.entries(feedback.ratings).map(([key, val]) => (
+            <motion.div
+              key={key}
+              variants={fadeInUp}
+              className="
+                bg-white dark:bg-gray-800
+                border border-gray-200 dark:border-gray-700
+                rounded-xl p-6
+                shadow-lg hover:shadow-xl
+                transition-all duration-300
+                transform hover:-translate-y-1
+              "
+            >
+              <CircularProgress label={key} value={val} />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Suggestions / Improvements */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="
+            bg-white dark:bg-gray-800
+            border border-gray-200 dark:border-gray-700
+            rounded-xl p-8
+            shadow-lg
+          "
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <MessageSquare className="h-6 w-6 text-indigo-500" />
+            <h2 className="text-2xl font-semibold">
+              Suggestions for Improvement
+            </h2>
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed"
+          >
+            {feedback.improvements}
+          </motion.p>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="flex justify-center gap-4 pt-4"
+        >
+          <Link href="/interview/start">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="
+                px-6 py-3
+                bg-gradient-to-r from-indigo-500 to-purple-600
+                text-white rounded-lg
+                hover:from-indigo-600 hover:to-purple-700
+                transition-all duration-300
+                flex items-center gap-2
+                shadow-lg hover:shadow-xl
+              "
+            >
+              Start New Interview <ArrowRight className="h-4 w-4" />
+            </motion.button>
+          </Link>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
