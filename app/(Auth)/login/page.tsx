@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { login } from "../../../utils/supabase/actions";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Mail } from "lucide-react";
+import { ArrowRight, Github, Mail, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as loginIllustration from "@/public/lottie/login.json";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { useFormStatus } from "react-dom";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -20,9 +23,33 @@ const fadeInUp = {
   transition: { duration: 0.5 },
 };
 
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      formAction={login}
+      disabled={pending}
+      className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+    >
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Signing In...
+        </>
+      ) : (
+        <>
+          Sign In <ArrowRight className="ml-2 h-4 w-4" />
+        </>
+      )}
+    </Button>
+  );
+}
+
 export default function LoginPage() {
   const params = useSearchParams();
   const nextPath = params.get("next") ?? "/";
+  const emailConfirm = params.get("auth");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -69,6 +96,14 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {emailConfirm === "confirm" && (
+                <Alert className="mb-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+                  <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-blue-600 dark:text-blue-400">
+                    Please check your email and verify your account before logging in.
+                  </AlertDescription>
+                </Alert>
+              )}
               <form className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
@@ -99,12 +134,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <input type="hidden" name="next" value={nextPath} />
-                <Button
-                  formAction={login}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-                >
-                  Sign In <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <SubmitButton />
               </form>
 
               <div className="relative my-6">

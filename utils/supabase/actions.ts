@@ -16,8 +16,7 @@ export async function login(formData: FormData) {
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    // you could pass this into your error page or handle more gracefully
-    redirect("/error");
+    throw new Error(error.message);
   }
 
   // re-render any layouts that depend on user state
@@ -40,15 +39,18 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect("/error");
+    throw new Error(error.message);
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/login?auth=confirm");
 }
 
 export async function signOut() {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error(error.message);
+  }
   redirect("/login");
 }

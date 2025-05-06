@@ -57,9 +57,11 @@ export const Agent = forwardRef(function Agent(
         setMessages((prev) => [...prev, newMessage]);
         console.log("Message received:", newMessage);
         // Check if the message contains the ending phrase
-        if (message.role === "assistant" && 
-            message.transcript.includes("have a great day ahead.")) {
-              console.log("inside the end call trial")
+        if (
+          message.role === "assistant" &&
+          message.transcript.includes("have a great day ahead.")
+        ) {
+          console.log("inside the end call trial");
           handleEnd();
         }
       }

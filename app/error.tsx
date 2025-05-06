@@ -6,7 +6,13 @@ import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-export default function ErrorPage() {
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <div className="flex items-center justify-center h-screen bg-red-50">
       <motion.div
@@ -46,7 +52,7 @@ export default function ErrorPage() {
                 damping: 12,
               }}
             >
-              Looks like our code monkeys tripped over a banana peel.
+              {error.message || "Looks like our code monkeys tripped over a banana peel."}
             </motion.p>
             <motion.p
               className="mb-6 italic text-sm text-gray-600"
@@ -59,7 +65,7 @@ export default function ErrorPage() {
                 damping: 12,
               }}
             >
-              But don’t worry, they’re picking themselves up as we speak.
+              But don't worry, they're picking themselves up as we speak.
             </motion.p>
             <motion.div
               initial={{ scale: 0 }}
@@ -71,8 +77,12 @@ export default function ErrorPage() {
                 times: [0, 0.5, 0.9, 1],
                 ease: "easeOut",
               }}
+              className="space-y-4"
             >
-              <Button asChild className="w-full">
+              <Button onClick={reset} className="w-full">
+                Try Again 🔄
+              </Button>
+              <Button asChild variant="outline" className="w-full">
                 <Link href="/" className="block w-full">
                   Take me back home 🏠
                 </Link>

@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Mail, User } from "lucide-react";
+import { ArrowRight, Github, Mail, User, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as signupIllustration from "@/public/lottie/signup.json";
+import { useFormStatus } from "react-dom";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -19,6 +20,29 @@ const fadeInUp = {
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5 },
 };
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      formAction={signup}
+      disabled={pending}
+      className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+    >
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Creating Account...
+        </>
+      ) : (
+        <>
+          Create Account <ArrowRight className="ml-2 h-4 w-4" />
+        </>
+      )}
+    </Button>
+  );
+}
 
 export default function SignupPage() {
   return (
@@ -99,12 +123,7 @@ export default function SignupPage() {
                     />
                   </div>
                 </div>
-                <Button
-                  formAction={signup}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-                >
-                  Create Account <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <SubmitButton />
               </form>
 
               <div className="relative my-6">
