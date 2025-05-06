@@ -211,6 +211,7 @@ export default function InterviewRoomPage() {
               code={sanitize(editorContent)}
               submitCount={submitCount}
               onStarted={() => setInterviewActive(true)}
+              onGeneratingFeedback={() => setIsGeneratingFeedback(true)}
             />
           </div>
         </div>

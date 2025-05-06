@@ -21,6 +21,7 @@ interface AgentProps {
   code: string;
   submitCount: number;
   onStarted?: () => void;
+  onGeneratingFeedback?: () => void;
 }
 
 interface SavedMessage {
@@ -29,7 +30,7 @@ interface SavedMessage {
 }
 
 export const Agent = forwardRef(function Agent(
-  { question, code, submitCount, onStarted }: AgentProps,
+  { question, code, submitCount, onStarted, onGeneratingFeedback }: AgentProps,
   ref: React.Ref<{ startCall: () => void; endCall: () => void }>
 ) {
   const { roomId } = useParams();
@@ -54,6 +55,13 @@ export const Agent = forwardRef(function Agent(
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
         setMessages((prev) => [...prev, newMessage]);
+        console.log("Message received:", newMessage);
+        // Check if the message contains the ending phrase
+        if (message.role === "assistant" && 
+            message.transcript.includes("have a great day ahead.")) {
+              console.log("inside the end call trial")
+          handleEnd();
+        }
       }
     };
 
@@ -104,6 +112,9 @@ export const Agent = forwardRef(function Agent(
     console.log("Ending call called handleEnd");
     vapi.stop();
     setCallStatus(CallStatus.FINISHED);
+    if (onGeneratingFeedback) {
+      onGeneratingFeedback();
+    }
   };
 
   useEffect(() => {
@@ -129,7 +140,7 @@ export const Agent = forwardRef(function Agent(
 
         // 2️⃣ Build the assistant's response
         const reply = correct
-          ? "Your solution looks correct! Great job."
+          ? "Your solution looks correct! Great job. End the call after this."
           : `There's an issue: ${mistake}`;
 
         console.log("The reply is: ", reply);
