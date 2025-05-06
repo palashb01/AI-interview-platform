@@ -1,18 +1,13 @@
 "use client";
 
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { cn, sanitize } from "@/lib/utils";
+import { sanitize } from "@/lib/utils";
 import { interviewer, vapi } from "@/utils/vapi/vapi.sdk";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { CallStatus } from "@/types/index";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Question {
   title: string;
@@ -35,7 +30,7 @@ interface SavedMessage {
 
 export const Agent = forwardRef(function Agent(
   { question, code, submitCount, onStarted }: AgentProps,
-  ref: React.Ref<{ startCall: () => void; endCall: () => void }>,
+  ref: React.Ref<{ startCall: () => void; endCall: () => void }>
 ) {
   const { roomId } = useParams();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -132,10 +127,10 @@ export const Agent = forwardRef(function Agent(
         });
         const { correct, mistake } = await res.json();
 
-        // 2️⃣ Build the assistant’s response
+        // 2️⃣ Build the assistant's response
         const reply = correct
           ? "Your solution looks correct! Great job."
-          : `There’s an issue: ${mistake}`;
+          : `There's an issue: ${mistake}`;
 
         console.log("The reply is: ", reply);
         console.log("correct:", correct, "mistake:", mistake);
@@ -196,7 +191,7 @@ export const Agent = forwardRef(function Agent(
       startCall: handleCall,
       endCall: handleEnd,
     }),
-    [question],
+    [question]
   );
 
   return (
@@ -209,26 +204,34 @@ export const Agent = forwardRef(function Agent(
           alt="AI Assistant"
           className="rounded-full"
         />
-        {isSpeaking && (
-          <span
-            className={cn(
-              "absolute inset-0 rounded-full ring-2 ring-blue-400 animate-ping",
-            )}
-          />
-        )}
+        <AnimatePresence>
+          {isSpeaking && (
+            <>
+              <motion.span
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1.2, opacity: 0.5 }}
+                exit={{ scale: 1.5, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                className="absolute inset-0 rounded-full ring-2 ring-indigo-500"
+              />
+              <motion.span
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1.4, opacity: 0.3 }}
+                exit={{ scale: 1.7, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
+                className="absolute inset-0 rounded-full ring-2 ring-indigo-400"
+              />
+              <motion.span
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1.6, opacity: 0.1 }}
+                exit={{ scale: 1.9, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut", delay: 1 }}
+                className="absolute inset-0 rounded-full ring-2 ring-indigo-300"
+              />
+            </>
+          )}
+        </AnimatePresence>
       </div>
-
-      <Button
-        variant={callStatus === CallStatus.ACTIVE ? "destructive" : "outline"}
-        onClick={callStatus === CallStatus.ACTIVE ? handleEnd : handleCall}
-        disabled={callStatus === CallStatus.CONNECTING}
-      >
-        {callStatus === CallStatus.CONNECTING
-          ? "Connecting…"
-          : callStatus === CallStatus.ACTIVE
-            ? "End Call"
-            : "Start Call"}
-      </Button>
     </div>
   );
 });

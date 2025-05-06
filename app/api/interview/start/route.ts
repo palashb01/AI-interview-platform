@@ -19,16 +19,10 @@ export async function POST(req: NextRequest) {
 
   if (qErr) {
     console.log("⚠️ [api/interview/start] Error fetching questions:", qErr);
-    return NextResponse.json(
-      { error: "Could not fetch questions" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Could not fetch questions" }, { status: 500 });
   }
   if (!questions || questions.length === 0) {
-    console.log(
-      "⚠️ [api/interview/start] No questions found for company:",
-      companyId,
-    );
+    console.log("⚠️ [api/interview/start] No questions found for company:", companyId);
     return NextResponse.json({ error: "No questions found" }, { status: 404 });
   }
   console.log(`ℹ️ [api/interview/start] Found ${questions.length} questions`);
@@ -51,10 +45,7 @@ export async function POST(req: NextRequest) {
 
   if (iErr || !interview) {
     console.log("❌ [api/interview/start] Failed to create interview:", iErr);
-    return NextResponse.json(
-      { error: "Could not create interview" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Could not create interview" }, { status: 500 });
   }
 
   console.log("🎉 [api/interview/start] Created interview:", interview.id);

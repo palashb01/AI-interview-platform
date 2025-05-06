@@ -6,10 +6,7 @@ import { codeGenerationSchema } from "../../../../constants/index";
 export async function POST(req: NextRequest) {
   const { question, code } = await req.json();
   if (typeof question !== "string" || typeof code !== "string") {
-    return NextResponse.json(
-      { error: "Missing question or code" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Missing question or code" }, { status: 400 });
   }
   const { object } = await generateObject({
     model: google("gemini-2.0-flash-001", {

@@ -11,6 +11,7 @@ import { QuestionCard } from "@/components/interview/QuestionCard";
 import { CodeEditorCard } from "@/components/interview/CodeEditorCard";
 import { CameraCard } from "@/components/interview/CameraCard";
 import { StartCallOverlay } from "@/components/interview/StartCallOverlay";
+import { LoadingOverlay } from "@/components/interview/LoadingOverlay";
 
 interface Question {
   title: string;
@@ -25,6 +26,8 @@ export default function InterviewRoomPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [interviewActive, setInterviewActive] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isGeneratingFeedback, setIsGeneratingFeedback] = useState(false);
   const { theme } = useTheme();
   const agentRef = useRef<{
     startCall: () => void;
@@ -96,7 +99,7 @@ export default function InterviewRoomPage() {
                 videoRef.current!.play().catch(console.error);
               });
             },
-            { once: true },
+            { once: true }
           );
         }
       } catch (e) {
@@ -134,9 +137,7 @@ export default function InterviewRoomPage() {
 
   const timer = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
   // --- Editor state ---
-  const [editorContent, setEditorContent] = useState<string>(
-    question?.boilercode || "",
-  );
+  const [editorContent, setEditorContent] = useState<string>(question?.boilercode || "");
   const [submitCount, setSubmitCount] = useState(0);
 
   useEffect(() => {
@@ -145,21 +146,46 @@ export default function InterviewRoomPage() {
     }
   }, [question]);
 
+  const handleStartCall = async () => {
+    setIsConnecting(true);
+    try {
+      await agentRef.current?.startCall();
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleEndCall = async () => {
+    setIsGeneratingFeedback(true);
+    try {
+      await agentRef.current?.endCall();
+    } catch (error) {
+      console.error("Error ending call:", error);
+      setIsGeneratingFeedback(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <LoadingOverlay
+        message={
+          isConnecting ? "Connecting to AI Interviewer..." : "Generating Interview Feedback..."
+        }
+        isVisible={isConnecting || isGeneratingFeedback}
+      />
+
       <TopBar
         companyId={question?.company_id || ""}
         timer={timer}
         interviewActive={interviewActive}
-        onEndCall={() => agentRef.current?.endCall()}
+        onEndCall={handleEndCall}
+        isGeneratingFeedback={isGeneratingFeedback}
       />
 
       <div className="flex flex-1 gap-6 p-6 overflow-hidden">
         <div className="relative flex flex-col flex-1 gap-4 min-h-0">
           {!interviewActive && (
-            <StartCallOverlay
-              onStartCall={() => agentRef.current?.startCall()}
-            />
+            <StartCallOverlay onStartCall={handleStartCall} isLoading={isConnecting} />
           )}
 
           <QuestionCard loading={loading} error={error} question={question} />

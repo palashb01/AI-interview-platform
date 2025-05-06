@@ -3,13 +3,7 @@
 import React from "react";
 import { signup } from "../../../utils/supabase/actions";
 import Link from "next/link";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,11 +32,7 @@ export default function SignupPage() {
           className="hidden lg:block"
         >
           <div className="relative h-[500px] -mb-32">
-            <Lottie
-              animationData={signupIllustration}
-              loop={true}
-              className="w-full h-full"
-            />
+            <Lottie animationData={signupIllustration} loop={true} className="w-full h-full" />
           </div>
           <motion.h1
             variants={fadeInUp}
@@ -58,8 +48,7 @@ export default function SignupPage() {
             animate="animate"
             className="text-gray-600 dark:text-gray-300 text-lg"
           >
-            Start your journey to mastering coding interviews with our
-            AI-powered platform.
+            Start your journey to mastering coding interviews with our AI-powered platform.
           </motion.p>
         </motion.div>
 
@@ -71,9 +60,7 @@ export default function SignupPage() {
         >
           <Card className="w-full max-w-md mx-auto border-2 border-gray-100 dark:border-gray-800 shadow-xl">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-center">
-                Create Account
-              </CardTitle>
+              <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
               <CardDescription className="text-center">
                 Enter your details to start your interview journey
               </CardDescription>
@@ -137,9 +124,7 @@ export default function SignupPage() {
               </Button>
 
               <div className="text-center mt-6 text-sm">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Already have an account?{" "}
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Already have an account? </span>
                 <Link
                   href="/login"
                   className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"

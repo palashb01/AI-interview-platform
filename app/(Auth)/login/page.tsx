@@ -1,20 +1,14 @@
 "use client";
 import React from "react";
 import { login } from "../../../utils/supabase/actions";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Mail, User } from "lucide-react";
+import { ArrowRight, Github, Mail } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as loginIllustration from "@/public/lottie/login.json";
 
@@ -41,11 +35,7 @@ export default function LoginPage() {
           className="hidden lg:block"
         >
           <div className="relative h-[400px]">
-            <Lottie
-              animationData={loginIllustration}
-              loop={true}
-              className="w-full h-full"
-            />
+            <Lottie animationData={loginIllustration} loop={true} className="w-full h-full" />
           </div>
           <motion.h1
             variants={fadeInUp}
@@ -61,8 +51,7 @@ export default function LoginPage() {
             animate="animate"
             className="text-gray-600 dark:text-gray-300 text-lg"
           >
-            Continue your journey to mastering coding interviews with our
-            AI-powered platform.
+            Continue your journey to mastering coding interviews with our AI-powered platform.
           </motion.p>
         </motion.div>
 
@@ -74,9 +63,7 @@ export default function LoginPage() {
         >
           <Card className="w-full max-w-md mx-auto border-2 border-gray-100 dark:border-gray-800 shadow-xl">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-center">
-                Sign In
-              </CardTitle>
+              <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
               <CardDescription className="text-center">
                 Enter your credentials to access your account
               </CardDescription>
@@ -137,9 +124,7 @@ export default function LoginPage() {
               </Button>
 
               <div className="text-center mt-6 text-sm">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Don't have an account?{" "}
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Don't have an account? </span>
                 <Link
                   href="/signup"
                   className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"

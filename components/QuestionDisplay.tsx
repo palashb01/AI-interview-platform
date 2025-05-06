@@ -55,10 +55,5 @@ export default function QuestionDisplay({ markdown }: QuestionDisplayProps) {
     };
   }, [markdown]);
 
-  return (
-    <div
-      className="prose max-w-none"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />;
 }

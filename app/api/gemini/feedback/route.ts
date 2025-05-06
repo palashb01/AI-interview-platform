@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
         - The function signature is provided by the interviewer not the candidate so consider the implementation for review.
         - the function signature also says implementation goes here don't say these things in improvement only conside the implementation, if it is empty say code is empty.
         Given:
+        - Check the code for all edge cases.
 
         • The transcript of the live interview (role/content pairs):
         ${messages.map((m) => `${m.role}: ${m.content}`).join("\n")}
@@ -67,10 +68,7 @@ export async function POST(req: NextRequest) {
   const parsed = feedbackSchema.safeParse(raw);
   if (!parsed.success) {
     console.error("Feedback schema mismatch:", parsed.error, raw);
-    return NextResponse.json(
-      { error: "Model returned invalid feedback" },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: "Model returned invalid feedback" }, { status: 502 });
   }
 
   const feedback = parsed.data;
@@ -81,10 +79,7 @@ export async function POST(req: NextRequest) {
       ratings: feedback.ratings, // JSONB column
       improvements: feedback.improvements, // TEXT column
     });
-    await supabase
-      .from("interviews")
-      .update({ finished: true })
-      .eq("id", interviewId);
+    await supabase.from("interviews").update({ finished: true }).eq("id", interviewId);
   } catch (dbErr) {
     console.error("DB insert error:", dbErr);
     // We still return feedback even if the DB insert fails

@@ -32,15 +32,8 @@ export default function TopBar() {
     <header className="flex items-center justify-between bg-white dark:bg-gray-800 px-6 py-3 shadow">
       {/* Left: logo + name */}
       <Link href="/" className="flex items-center space-x-2">
-        <Image
-          src="/assets/images/logo.png"
-          alt="Logo"
-          width={32}
-          height={32}
-        />
-        <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
-          AI Interview
-        </span>
+        <Image src="/assets/images/logo.png" alt="Logo" width={32} height={32} />
+        <span className="text-lg font-bold text-gray-900 dark:text-gray-100">AI Interview</span>
       </Link>
 
       {/* Right: theme toggle + auth buttons */}

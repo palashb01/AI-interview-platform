@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { LoadingSpinner } from "@/components/ui/loadingSpinner";
 import { motion } from "framer-motion";
-import { ArrowRight, Star, TrendingUp, MessageSquare } from "lucide-react";
+import { ArrowRight, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 const fadeInUp = {
@@ -206,9 +206,7 @@ export default function FeedbackPage() {
         >
           <div className="flex items-center gap-3 mb-4">
             <MessageSquare className="h-6 w-6 text-indigo-500" />
-            <h2 className="text-2xl font-semibold">
-              Suggestions for Improvement
-            </h2>
+            <h2 className="text-2xl font-semibold">Suggestions for Improvement</h2>
           </div>
           <motion.p
             initial={{ opacity: 0 }}

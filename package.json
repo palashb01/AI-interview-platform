@@ -8,7 +8,9 @@
     "lint:eslint": "next lint",
     "lint:prettier": "prettier --check .",
     "lint": "npm run lint:eslint && npm run lint:prettier",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "fix": "npm run lint:eslint -- --fix && npm run format",
+    "clean": "npm run fix && npm run typecheck"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.14",
@@ -46,8 +48,11 @@
     "@types/node": "22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "eslint": "^9.26.0",
     "eslint-config-next": "^15.3.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "postcss": "8.4.49",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "3.4.17",

@@ -27,9 +27,7 @@ export function LoadingSpinner({
   const filterClass = theme === "dark" ? "filter invert" : "";
 
   return (
-    <div
-      className={clsx("flex flex-col items-center justify-center", className)}
-    >
+    <div className={clsx("flex flex-col items-center justify-center", className)}>
       <Lottie
         animationData={loadingAnimation}
         loop={loop}
@@ -40,9 +38,7 @@ export function LoadingSpinner({
         }}
         className={clsx("mx-auto", filterClass)}
       />
-      {text && (
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{text}</p>
-      )}
+      {text && <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{text}</p>}
     </div>
   );
 }

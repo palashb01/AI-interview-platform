@@ -75,11 +75,7 @@ export default function StartInterviewPage() {
           className="hidden lg:block"
         >
           <div className="relative h-[400px]">
-            <Lottie
-              animationData={interviewIllustration}
-              loop={true}
-              className="w-full h-full"
-            />
+            <Lottie animationData={interviewIllustration} loop={true} className="w-full h-full" />
           </div>
           <motion.h1
             variants={fadeInUp}
@@ -95,8 +91,8 @@ export default function StartInterviewPage() {
             animate="animate"
             className="text-gray-600 dark:text-gray-300 text-lg"
           >
-            Select your target company and experience level to begin your
-            personalized AI-powered interview session.
+            Select your target company and experience level to begin your personalized AI-powered
+            interview session.
           </motion.p>
         </motion.div>
 
@@ -114,9 +110,7 @@ export default function StartInterviewPage() {
             className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 border-2 border-gray-100 dark:border-gray-700"
           >
             <motion.div variants={fadeInUp} className="mb-8">
-              <h2 className="text-2xl font-bold text-center mb-2">
-                Start Your Interview
-              </h2>
+              <h2 className="text-2xl font-bold text-center mb-2">Start Your Interview</h2>
               <p className="text-center text-gray-600 dark:text-gray-400">
                 Choose your target company and experience level
               </p>
@@ -124,10 +118,7 @@ export default function StartInterviewPage() {
 
             {/* Company Selection */}
             <motion.div variants={fadeInUp} className="space-y-4 mb-6">
-              <Label
-                htmlFor="company"
-                className="text-sm font-medium flex items-center gap-2"
-              >
+              <Label htmlFor="company" className="text-sm font-medium flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
                 Target Company
               </Label>
@@ -136,9 +127,7 @@ export default function StartInterviewPage() {
                 value={companyId}
                 onChange={(e) => {
                   setCompanyId(e.target.value);
-                  const company = companies.find(
-                    (c) => c.id === e.target.value,
-                  );
+                  const company = companies.find((c) => c.id === e.target.value);
                   setSelectedCompany(company || null);
                 }}
                 className="w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
@@ -156,10 +145,7 @@ export default function StartInterviewPage() {
 
             {/* Experience Input */}
             <motion.div variants={fadeInUp} className="space-y-4 mb-8">
-              <Label
-                htmlFor="experience"
-                className="text-sm font-medium flex items-center gap-2"
-              >
+              <Label htmlFor="experience" className="text-sm font-medium flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 Years of Experience
               </Label>

@@ -64,13 +64,9 @@ export default function Home() {
               >
                 Master Coding Interviews with AI
               </motion.h1>
-              <motion.p
-                variants={fadeInUp}
-                className="text-xl text-gray-600 dark:text-gray-300"
-              >
-                Practice with our AI-powered interview platform. Get real-time
-                feedback, improve your coding skills, and ace your next
-                technical interview.
+              <motion.p variants={fadeInUp} className="text-xl text-gray-600 dark:text-gray-300">
+                Practice with our AI-powered interview platform. Get real-time feedback, improve
+                your coding skills, and ace your next technical interview.
               </motion.p>
               <motion.div variants={fadeInUp}>
                 <Button
@@ -78,10 +74,7 @@ export default function Home() {
                   size="lg"
                   className="px-8 py-6 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
                 >
-                  <Link
-                    href="/interview/start"
-                    className="flex items-center gap-2"
-                  >
+                  <Link href="/interview/start" className="flex items-center gap-2">
                     Start Interview <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
@@ -124,9 +117,7 @@ export default function Home() {
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {feature.description}
-                </p>
+                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -145,25 +136,19 @@ export default function Home() {
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                 1000+
               </div>
-              <div className="text-gray-600 dark:text-gray-300">
-                Interviews Conducted
-              </div>
+              <div className="text-gray-600 dark:text-gray-300">Interviews Conducted</div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-6">
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                 95%
               </div>
-              <div className="text-gray-600 dark:text-gray-300">
-                Success Rate
-              </div>
+              <div className="text-gray-600 dark:text-gray-300">Success Rate</div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-6">
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                 24/7
               </div>
-              <div className="text-gray-600 dark:text-gray-300">
-                Available Practice
-              </div>
+              <div className="text-gray-600 dark:text-gray-300">Available Practice</div>
             </motion.div>
           </div>
         </motion.div>
