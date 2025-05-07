@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Mail, Loader2 } from "lucide-react";
+import { ArrowRight, Mail, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as loginIllustration from "@/public/lottie/login.json";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import { createClient } from "@/utils/supabase/client";
+import { FcGoogle } from "react-icons/fc";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -48,12 +50,27 @@ function SubmitButton() {
 
 function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm: string | null }) {
   const [error, setError] = useState<string | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const supabase = createClient();
 
   async function handleSubmit(formData: FormData) {
     setError(null);
     const result = await login(formData);
     if (result?.error) {
       setError(result.error);
+    }
+  }
+
+  async function signInWithGoogle() {
+    setIsGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error(error);
+      setIsGoogleLoading(false);
     }
   }
 
@@ -116,9 +133,14 @@ function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm:
           </div>
         </div>
 
-        <Button variant="outline" className="w-full">
-          <Github className="mr-2 h-4 w-4" />
-          GitHub
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={signInWithGoogle}
+          disabled={isGoogleLoading}
+        >
+          <FcGoogle className="mr-2 h-4 w-4" />
+          {isGoogleLoading ? "Signing in..." : "Sign in with Google"}
         </Button>
 
         <div className="text-center mt-6 text-sm">
