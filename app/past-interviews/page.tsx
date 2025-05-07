@@ -214,7 +214,7 @@ export default function PastInterviewsPage() {
                       </CardDescription>
                     </div>
                     <Badge variant="outline" className="text-xs">
-                      {interview.submitted_code?.split("\n").length || 0} lines
+                      C++
                     </Badge>
                   </div>
                 </CardHeader>

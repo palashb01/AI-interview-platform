@@ -3,6 +3,7 @@ import { createClient } from "../../../../utils/supabase/server";
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { feedbackSchema } from "@/constants";
+import { sanitize } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   const { messages, question, code, interviewId } = await req.json();
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
         - the function signature also says implementation goes here don't say these things in improvement only conside the implementation, if it is empty say code is empty.
         Given:
         - Check the code for all edge cases.
+        - Also consider the past messages if the user was struggling or gave wrong solution before based on that also give feedback.
 
         • The transcript of the live interview (role/content pairs):
         ${messages.map((m) => `${m.role}: ${m.content}`).join("\n")}
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
 
         • The candidate’s submitted C++ code:
         \`\`\`cpp
-        ${code}
+        ${sanitize(code)}
         \`\`\`
 
         Please output **only** a JSON object with this exact shape:

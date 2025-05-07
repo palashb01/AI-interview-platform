@@ -130,6 +130,7 @@ export const Agent = forwardRef(function Agent(
     (async () => {
       try {
         // 1️⃣ Call your Gemini‐check endpoint
+        console.log("code", code);
         const res = await fetch("/api/gemini/code", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

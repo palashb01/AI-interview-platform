@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Agent } from "@/components/Agent";
-import { sanitize } from "@/lib/utils";
 import { useTheme } from "@/components/ThemeProvider";
 import { TopBar } from "@/components/interview/TopBar";
 import { QuestionCard } from "@/components/interview/QuestionCard";
@@ -208,7 +207,7 @@ export default function InterviewRoomPage() {
             <Agent
               ref={agentRef}
               question={question}
-              code={sanitize(editorContent)}
+              code={editorContent}
               submitCount={submitCount}
               onStarted={() => setInterviewActive(true)}
               onGeneratingFeedback={() => setIsGeneratingFeedback(true)}

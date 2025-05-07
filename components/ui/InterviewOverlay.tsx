@@ -1,8 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Code, FileText, Star } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -13,6 +11,7 @@ import rehypeStringify from "rehype-stringify";
 import { Element } from "hast";
 import React from "react";
 import { Progress } from "@/components/ui/progress";
+import MonacoEditor from "@monaco-editor/react";
 
 interface InterviewOverlayProps {
   isOpen: boolean;
@@ -28,6 +27,8 @@ interface InterviewOverlayProps {
     technicalKnowledge: number;
   };
 }
+
+const getFormattedCode = (code: string) => code.replace(/\\n/g, "\n");
 
 export function InterviewOverlay({
   isOpen,
@@ -149,17 +150,21 @@ export function InterviewOverlay({
                   />
                 </div>
               )}
-              <div className="rounded-lg overflow-hidden border border-border">
-                <SyntaxHighlighter
-                  language="typescript"
-                  style={vscDarkPlus}
-                  customStyle={{
-                    margin: 0,
-                    borderRadius: "0.5rem",
+              <div className="rounded-lg border" style={{ height: 400 }}>
+                <MonacoEditor
+                  height="100%"
+                  language="cpp"
+                  value={getFormattedCode(content)}
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: false },
+                    fontSize: 16,
+                    scrollBeyondLastLine: false,
+                    wordWrap: "on",
+                    lineNumbers: "on",
+                    theme: "vs-dark",
                   }}
-                >
-                  {content}
-                </SyntaxHighlighter>
+                />
               </div>
             </div>
           )}
