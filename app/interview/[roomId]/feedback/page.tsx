@@ -162,9 +162,9 @@ export default function FeedbackPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-gray-600 dark:text-gray-400"
+            className="text-gray-600 dark:text-gray-400 text-lg"
           >
-            Here's how you performed in your interview
+            Here&apos;s how you performed in your interview
           </motion.p>
         </div>
 

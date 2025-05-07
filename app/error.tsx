@@ -65,7 +65,7 @@ export default function Error({
                 damping: 12,
               }}
             >
-              But don't worry, they're picking themselves up as we speak.
+              But don&apos;t worry, they&apos;re picking themselves up as we speak.
             </motion.p>
             <motion.div
               initial={{ scale: 0 }}

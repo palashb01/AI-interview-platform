@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Calendar, Code, Star, Clock, MessageSquare, ArrowRight, FileText } from "lucide-react";
+import { Calendar, Code, Clock, MessageSquare, ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -33,13 +33,34 @@ interface Interview {
   };
 }
 
+interface DatabaseRow {
+  id: string;
+  ratings: {
+    codeQuality: number;
+    communication: number;
+    problemSolving: number;
+    confidenceClarity: number;
+    technicalKnowledge: number;
+  };
+  improvements: string;
+  submitted_at: string;
+  submitted_code: string;
+  interview_id: string;
+  interviews: {
+    questions: {
+      body_md: string;
+      company_id: string;
+    };
+    experience: string;
+  };
+}
+
 export default function PastInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOverlay, setSelectedOverlay] = useState<{
     type: "feedback" | "solution";
     content: string;
-    title: string;
     question?: string;
     ratings?: {
       codeQuality: number;
@@ -81,14 +102,13 @@ export default function PastInterviewsPage() {
         .eq("interviews.user_email", user.email)
         .order("submitted_at", { ascending: true });
 
-      console.log(rows);
       if (error) {
         console.error("Error fetching interviews:", error);
         return;
       }
 
       // Transform the data to match the Interview interface
-      const transformedData = (rows || []).map((row: any) => ({
+      const transformedData = ((rows || []) as unknown as DatabaseRow[]).map((row) => ({
         id: row.id,
         submitted_at: row.submitted_at,
         ratings: row.ratings,
@@ -104,7 +124,6 @@ export default function PastInterviewsPage() {
         },
       }));
 
-      console.log("Transformed Data:", transformedData);
       setInterviews(transformedData);
       setLoading(false);
     }
@@ -239,7 +258,6 @@ export default function PastInterviewsPage() {
                         setSelectedOverlay({
                           type: "feedback",
                           content: interview.improvements,
-                          title: `Interview #${interviews.length - index} Feedback`,
                           ratings: interview.ratings,
                         })
                       }
@@ -255,7 +273,6 @@ export default function PastInterviewsPage() {
                         setSelectedOverlay({
                           type: "solution",
                           content: interview.submitted_code,
-                          title: `Interview #${interviews.length - index} Solution`,
                           question: interview.interviews.questions.body_md,
                         })
                       }
@@ -278,7 +295,6 @@ export default function PastInterviewsPage() {
           onClose={() => setSelectedOverlay(null)}
           type={selectedOverlay.type}
           content={selectedOverlay.content}
-          title={selectedOverlay.title}
           question={selectedOverlay.question}
           ratings={selectedOverlay.ratings}
         />

@@ -34,8 +34,6 @@ export default function StartInterviewPage() {
   const [experience, setExperience] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  type Company = { id: string; name: string };
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 
   // Validate numeric experience
   useEffect(() => {
@@ -127,8 +125,6 @@ export default function StartInterviewPage() {
                 value={companyId}
                 onChange={(e) => {
                   setCompanyId(e.target.value);
-                  const company = companies.find((c) => c.id === e.target.value);
-                  setSelectedCompany(company || null);
                 }}
                 className="w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
               >

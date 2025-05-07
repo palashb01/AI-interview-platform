@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import TopBar from "@/components/TopBar";
 import { motion } from "framer-motion";
-import { ArrowRight, Code, Mic, Video, Zap, Brain, MessageSquare, Clock } from "lucide-react";
+import { ArrowRight, Code, Brain, MessageSquare, Clock } from "lucide-react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },

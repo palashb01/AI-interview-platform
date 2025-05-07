@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon, LogOut, User } from "lucide-react";
+import { Sun, Moon, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { signOut } from "@/utils/supabase/actions";
 import { createClient } from "@/utils/supabase/client";
@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 
 export default function TopBar() {
-  const { theme, toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const pathname = usePathname();
 

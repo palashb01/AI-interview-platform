@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { login } from "../../../utils/supabase/actions";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -154,7 +154,9 @@ export default function LoginPage() {
               </Button>
 
               <div className="text-center mt-6 text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Don't have an account? </span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  Don&apos;t have an account?{" "}
+                </span>
                 <Link
                   href="/signup"
                   className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"

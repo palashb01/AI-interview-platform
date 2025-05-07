@@ -6,7 +6,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
 import type { Element } from "hast";
 
@@ -37,11 +37,11 @@ export default function QuestionDisplay({ markdown }: QuestionDisplayProps) {
             const cn = (node.properties?.className ?? []) as string[];
             cn.push("bg-yellow-200/20");
           },
-          onVisitHighlightedWord(node: Element) {
+          onVisitHighlightedChars(node: Element) {
             const cn = (node.properties?.className ?? []) as string[];
             cn.push("bg-orange-200/40");
           },
-        } as any)
+        } satisfies Options)
         .use(rehypeStringify) // to HTML string
         .process(markdown);
 
