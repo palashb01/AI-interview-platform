@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import TopBar from "@/components/TopBar";
 import { motion } from "framer-motion";
-import { ArrowRight, Code, Mic, Video, Zap } from "lucide-react";
+import { ArrowRight, Code, Mic, Video, Zap, Brain, MessageSquare, Clock } from "lucide-react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -23,24 +23,24 @@ const staggerContainer = {
 
 const features = [
   {
-    icon: <Mic className="w-6 h-6" />,
-    title: "Voice Interaction",
-    description: "Natural conversation with AI interviewer",
-  },
-  {
-    icon: <Video className="w-6 h-6" />,
-    title: "Video Recording",
-    description: "Record your interview for later review",
+    icon: <Brain className="w-6 h-6" />,
+    title: "AI-Powered Interviews",
+    description: "Experience realistic technical interviews with our advanced AI interviewer",
   },
   {
     icon: <Code className="w-6 h-6" />,
-    title: "Real-time Coding",
-    description: "Write and test code in real-time",
+    title: "Coding Challenges",
+    description: "Solve real-world coding problems with our interactive code editor",
   },
   {
-    icon: <Zap className="w-6 h-6" />,
-    title: "Instant Feedback",
-    description: "Get immediate AI-powered feedback",
+    icon: <MessageSquare className="w-6 h-6" />,
+    title: "Detailed Feedback",
+    description: "Get comprehensive feedback on your code quality and problem-solving approach",
+  },
+  {
+    icon: <Clock className="w-6 h-6" />,
+    title: "Past Interviews",
+    description: "Review your interview history and track your progress over time",
   },
 ];
 
@@ -89,7 +89,7 @@ export default function Home() {
             >
               <Image
                 src="/assets/images/homepage.png"
-                alt="AI Interview Illustration"
+                alt="AI Interview Platform"
                 fill
                 className="object-contain"
                 priority
@@ -134,24 +134,33 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <motion.div variants={fadeInUp} className="p-6">
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
-                1000+
+                500+
               </div>
-              <div className="text-gray-600 dark:text-gray-300">Interviews Conducted</div>
+              <div className="text-gray-600 dark:text-gray-300">Coding Problems</div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-6">
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
-                95%
+                98%
               </div>
-              <div className="text-gray-600 dark:text-gray-300">Success Rate</div>
+              <div className="text-gray-600 dark:text-gray-300">User Satisfaction</div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-6">
               <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
-                24/7
+                50+
               </div>
-              <div className="text-gray-600 dark:text-gray-300">Available Practice</div>
+              <div className="text-gray-600 dark:text-gray-300">Companies Covered</div>
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Footer */}
+        <footer className="border-t border-gray-200 dark:border-gray-800">
+          <div className="container mx-auto px-6 py-8">
+            <div className="text-center text-gray-600 dark:text-gray-400">
+              Built with ❤️ by Palash Baderia
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );

@@ -37,12 +37,12 @@ export default function TopBar() {
       <div className="container flex h-14 items-center justify-between">
         {/* Left: logo + name */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image 
-            src="/assets/images/logo.png" 
-            alt="Logo" 
-            width={32} 
+          <Image
+            src="/assets/images/logo.png"
+            alt="Logo"
+            width={32}
             height={32}
-            className="rounded-lg transition-transform hover:scale-105" 
+            className="rounded-lg transition-transform hover:scale-105"
           />
           <span className="text-lg font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
             AI Interview
@@ -126,9 +126,7 @@ export default function TopBar() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{userEmail}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {userEmail}
-                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -143,7 +141,12 @@ export default function TopBar() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center space-x-2">
-              <Button asChild variant="outline" size="sm" className="border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white">
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white"
+              >
                 <Link href="/login">Log In</Link>
               </Button>
               <Button asChild size="sm">

@@ -30,13 +30,21 @@ interface InterviewOverlayProps {
   };
 }
 
-export function InterviewOverlay({ isOpen, onClose, type, content, title, question, ratings }: InterviewOverlayProps) {
+export function InterviewOverlay({
+  isOpen,
+  onClose,
+  type,
+  content,
+  title,
+  question,
+  ratings,
+}: InterviewOverlayProps) {
   const [formattedQuestion, setFormattedQuestion] = React.useState<string>("");
 
   React.useEffect(() => {
     async function formatQuestion() {
       if (!question) return;
-      
+
       const file = await unified()
         .use(remarkParse)
         .use(remarkGfm)
@@ -71,11 +79,11 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
     if (!ratings) return null;
 
     const ratingItems = [
-      { key: 'problemSolving', label: 'Problem Solving' },
-      { key: 'codeQuality', label: 'Code Quality' },
-      { key: 'communication', label: 'Communication' },
-      { key: 'technicalKnowledge', label: 'Technical Knowledge' },
-      { key: 'confidenceClarity', label: 'Confidence & Clarity' }
+      { key: "problemSolving", label: "Problem Solving" },
+      { key: "codeQuality", label: "Code Quality" },
+      { key: "communication", label: "Communication" },
+      { key: "technicalKnowledge", label: "Technical Knowledge" },
+      { key: "confidenceClarity", label: "Confidence & Clarity" },
     ];
 
     return (
@@ -89,12 +97,11 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
             <div key={key} className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{label}</span>
-                <span className="text-sm text-muted-foreground">{ratings[key as keyof typeof ratings]}/10</span>
+                <span className="text-sm text-muted-foreground">
+                  {ratings[key as keyof typeof ratings]}/10
+                </span>
               </div>
-              <Progress 
-                value={ratings[key as keyof typeof ratings] * 10} 
-                className="h-2"
-              />
+              <Progress value={ratings[key as keyof typeof ratings] * 10} className="h-2" />
             </div>
           ))}
         </div>
@@ -127,7 +134,9 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
               <div className="prose dark:prose-invert max-w-none">
                 <h3 className="text-lg font-semibold mb-4">Detailed Feedback</h3>
                 {content.split("\n").map((line, index) => (
-                  <p key={index} className="mb-2 text-foreground">{line}</p>
+                  <p key={index} className="mb-2 text-foreground">
+                    {line}
+                  </p>
                 ))}
               </div>
             </div>
@@ -136,7 +145,7 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
               {question && (
                 <div className="prose dark:prose-invert max-w-none bg-muted/50 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold mb-2">Question:</h3>
-                  <div 
+                  <div
                     className="text-foreground"
                     dangerouslySetInnerHTML={{ __html: formattedQuestion }}
                   />
@@ -148,7 +157,7 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
                   style={vscDarkPlus}
                   customStyle={{
                     margin: 0,
-                    borderRadius: '0.5rem',
+                    borderRadius: "0.5rem",
                   }}
                 >
                   {content}
@@ -160,4 +169,4 @@ export function InterviewOverlay({ isOpen, onClose, type, content, title, questi
       </DialogContent>
     </Dialog>
   );
-} 
+}

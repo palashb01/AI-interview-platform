@@ -53,13 +53,16 @@ export default function PastInterviewsPage() {
   useEffect(() => {
     async function fetchInterviews() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) return;
 
       const { data: rows, error } = await supabase
         .from("interview_feedback")
-        .select(`
+        .select(
+          `
           id,
           ratings,
           improvements,
@@ -73,10 +76,11 @@ export default function PastInterviewsPage() {
               company_id
             )
           )
-        `)
+        `
+        )
         .eq("interviews.user_email", user.email)
         .order("submitted_at", { ascending: true });
-      
+
       console.log(rows);
       if (error) {
         console.error("Error fetching interviews:", error);
@@ -95,12 +99,12 @@ export default function PastInterviewsPage() {
           experience: row.interviews.experience,
           questions: {
             body_md: row.interviews.questions.body_md,
-            company_id: row.interviews.questions.company_id
-          }
-        }
+            company_id: row.interviews.questions.company_id,
+          },
+        },
       }));
 
-      console.log('Transformed Data:', transformedData);
+      console.log("Transformed Data:", transformedData);
       setInterviews(transformedData);
       setLoading(false);
     }
@@ -128,7 +132,7 @@ export default function PastInterviewsPage() {
           <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
       </div>
-      
+
       {interviews.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -166,22 +170,25 @@ export default function PastInterviewsPage() {
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <CardTitle className="text-lg">
-                        {(interview.interviews?.questions?.company_id?.charAt(0).toUpperCase() + interview.interviews?.questions?.company_id?.slice(1).toLowerCase()) || 'Unknown Company'} - {interview.interviews?.experience || 'Unknown'} Level
+                        {interview.interviews?.questions?.company_id?.charAt(0).toUpperCase() +
+                          interview.interviews?.questions?.company_id?.slice(1).toLowerCase() ||
+                          "Unknown Company"}{" "}
+                        - {interview.interviews?.experience || "Unknown"} Level
                       </CardTitle>
                       <CardDescription className="flex items-center space-x-2 text-xs">
                         <Calendar className="h-3 w-3" />
                         <span>
                           {new Date(interview.submitted_at).toLocaleDateString(undefined, {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
                           })}
                         </span>
                         <Clock className="h-3 w-3 ml-2" />
                         <span>
                           {new Date(interview.submitted_at).toLocaleTimeString(undefined, {
-                            hour: '2-digit',
-                            minute: '2-digit',
+                            hour: "2-digit",
+                            minute: "2-digit",
                             hour12: true,
                           })}
                         </span>
@@ -203,19 +210,22 @@ export default function PastInterviewsPage() {
                             interview.ratings.codeQuality +
                             interview.ratings.communication +
                             interview.ratings.technicalKnowledge +
-                            interview.ratings.confidenceClarity) / 5
-                        )}/10
+                            interview.ratings.confidenceClarity) /
+                            5
+                        )}
+                        /10
                       </span>
                     </div>
-                    <Progress 
+                    <Progress
                       value={
                         (interview.ratings.problemSolving +
                           interview.ratings.codeQuality +
                           interview.ratings.communication +
                           interview.ratings.technicalKnowledge +
-                          interview.ratings.confidenceClarity) * 2
-                      } 
-                      className="h-1.5" 
+                          interview.ratings.confidenceClarity) *
+                        2
+                      }
+                      className="h-1.5"
                     />
                   </div>
 
@@ -225,12 +235,14 @@ export default function PastInterviewsPage() {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={() => setSelectedOverlay({
-                        type: "feedback",
-                        content: interview.improvements,
-                        title: `Interview #${interviews.length - index} Feedback`,
-                        ratings: interview.ratings
-                      })}
+                      onClick={() =>
+                        setSelectedOverlay({
+                          type: "feedback",
+                          content: interview.improvements,
+                          title: `Interview #${interviews.length - index} Feedback`,
+                          ratings: interview.ratings,
+                        })
+                      }
                     >
                       <FileText className="h-4 w-4 mr-2" />
                       Feedback
@@ -239,12 +251,14 @@ export default function PastInterviewsPage() {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={() => setSelectedOverlay({
-                        type: "solution",
-                        content: interview.submitted_code,
-                        title: `Interview #${interviews.length - index} Solution`,
-                        question: interview.interviews.questions.body_md
-                      })}
+                      onClick={() =>
+                        setSelectedOverlay({
+                          type: "solution",
+                          content: interview.submitted_code,
+                          title: `Interview #${interviews.length - index} Solution`,
+                          question: interview.interviews.questions.body_md,
+                        })
+                      }
                     >
                       <Code className="h-4 w-4 mr-2" />
                       Solution
