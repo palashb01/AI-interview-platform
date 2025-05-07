@@ -93,6 +93,7 @@ export default function FeedbackPage() {
 
   useEffect(() => {
     (async () => {
+      console.log(roomId);
       const supabase = await createClient();
       const { data, error } = await supabase
         .from("interview_feedback")

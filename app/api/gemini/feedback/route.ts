@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
       interview_id: interviewId,
       ratings: feedback.ratings, // JSONB column
       improvements: feedback.improvements, // TEXT column
+      submitted_code: code,
     });
     await supabase.from("interviews").update({ finished: true }).eq("id", interviewId);
   } catch (dbErr) {
