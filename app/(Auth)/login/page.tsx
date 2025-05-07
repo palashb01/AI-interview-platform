@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { login } from "../../../utils/supabase/actions";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ function SubmitButton() {
 
   return (
     <Button
-      formAction={login}
+      type="submit"
       disabled={pending}
       className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
     >
@@ -47,6 +47,16 @@ function SubmitButton() {
 }
 
 function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm: string | null }) {
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    setError(null);
+    const result = await login(formData);
+    if (result?.error) {
+      setError(result.error);
+    }
+  }
+
   return (
     <Card className="w-full max-w-md mx-auto border-2 border-gray-100 dark:border-gray-800 shadow-xl">
       <CardHeader className="space-y-1">
@@ -64,7 +74,13 @@ function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm:
             </AlertDescription>
           </Alert>
         )}
-        <form className="space-y-4">
+        {error && (
+          <Alert className="mb-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+            <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <AlertDescription className="text-red-600 dark:text-red-400">{error}</AlertDescription>
+          </Alert>
+        )}
+        <form className="space-y-4" action={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium">
               Email
@@ -85,13 +101,7 @@ function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm:
             <Label htmlFor="password" className="text-sm font-medium">
               Password
             </Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              required
-            />
+            <Input id="password" name="password" type="password" placeholder="••••••••" required />
           </div>
           <input type="hidden" name="next" value={nextPath} />
           <SubmitButton />
@@ -102,9 +112,7 @@ function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm:
             <span className="w-full border-t border-gray-200 dark:border-gray-700" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white dark:bg-gray-900 px-2 text-gray-500">
-              Or continue with
-            </span>
+            <span className="bg-white dark:bg-gray-900 px-2 text-gray-500">Or continue with</span>
           </div>
         </div>
 
@@ -114,9 +122,7 @@ function LoginForm({ nextPath, emailConfirm }: { nextPath: string; emailConfirm:
         </Button>
 
         <div className="text-center mt-6 text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
-            Don&apos;t have an account?{" "}
-          </span>
+          <span className="text-gray-600 dark:text-gray-400">Don&apos;t have an account? </span>
           <Link
             href="/signup"
             className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"

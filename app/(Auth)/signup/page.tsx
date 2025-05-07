@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { signup } from "../../../utils/supabase/actions";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Github, Mail, User, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as signupIllustration from "@/public/lottie/signup.json";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -26,7 +28,7 @@ function SubmitButton() {
 
   return (
     <Button
-      formAction={signup}
+      type="submit"
       disabled={pending}
       className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
     >
@@ -45,6 +47,17 @@ function SubmitButton() {
 }
 
 export default function SignupPage() {
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    setError(null);
+    const result = await signup(formData);
+    console.log("result", result);
+    if (result?.error) {
+      setError(result.error);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -55,7 +68,7 @@ export default function SignupPage() {
           transition={{ duration: 0.5 }}
           className="hidden lg:block"
         >
-          <div className="relative h-[500px] -mb-32">
+          <div className="relative h-[400px]">
             <Lottie animationData={signupIllustration} loop={true} className="w-full h-full" />
           </div>
           <motion.h1
@@ -86,11 +99,19 @@ export default function SignupPage() {
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
               <CardDescription className="text-center">
-                Enter your details to start your interview journey
+                Enter your details to create your account
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
+              {error && (
+                <Alert className="mb-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                  <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                  <AlertDescription className="text-red-600 dark:text-red-400">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
+              <form className="space-y-4" action={handleSubmit}>
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
                     Email

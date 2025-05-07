@@ -3,7 +3,7 @@ import { createClient } from "../../../../utils/supabase/server";
 
 export async function GET(
   req: NextRequest,
-  { params } : { params: Promise<{ interviewId: string }> }
+  { params }: { params: Promise<{ interviewId: string }> }
 ) {
   const { interviewId } = await params;
 

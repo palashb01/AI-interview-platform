@@ -16,7 +16,7 @@ export async function login(formData: FormData) {
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   // re-render any layouts that depend on user state
@@ -31,15 +31,17 @@ export async function signup(formData: FormData) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
-  const data = {
+  const formInputData = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   };
 
-  const { error } = await supabase.auth.signUp(data);
-
+  const { data, error } = await supabase.auth.signUp(formInputData);
+  if (data.user?.role != "authenticated" && data.user != null) {
+    return { error: "User already exists! Please login." };
+  }
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/", "layout");
