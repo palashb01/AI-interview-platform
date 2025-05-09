@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Code, FileText, Star } from "lucide-react";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -39,6 +38,27 @@ export function InterviewOverlay({
   ratings,
 }: InterviewOverlayProps) {
   const [formattedQuestion, setFormattedQuestion] = React.useState<string>("");
+  const [fontSize, setFontSize] = React.useState(14);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if(width < 500){
+        setFontSize(10);
+      }
+      else if (width < 640) {
+        setFontSize(12);
+      } else if (width < 1024) {
+        setFontSize(13);
+      } else {
+        setFontSize(14);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   React.useEffect(() => {
     async function formatQuestion() {
@@ -126,14 +146,14 @@ export function InterviewOverlay({
             )}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-full pr-4">
+        <div className="h-full overflow-y-auto pr-4 custom-scrollbar">
           {type === "feedback" ? (
             <div className="space-y-6">
               {renderRatings()}
               <div className="prose dark:prose-invert max-w-none">
                 <h3 className="text-lg font-semibold mb-4">Detailed Feedback</h3>
                 {content.split("\n").map((line, index) => (
-                  <p key={index} className="mb-2 text-foreground">
+                  <p key={index} className="mb-2 text-foreground text-sm sm:text-base">
                     {line}
                   </p>
                 ))}
@@ -145,12 +165,16 @@ export function InterviewOverlay({
                 <div className="prose dark:prose-invert max-w-none bg-muted/50 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold mb-2">Question:</h3>
                   <div
-                    className="text-foreground"
+                    className="text-foreground text-sm sm:text-base max-h-[200px] overflow-y-auto overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: formattedQuestion }}
+                    style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: 'rgba(155, 155, 155, 0.5) transparent'
+                    }}
                   />
                 </div>
               )}
-              <div className="rounded-lg border" style={{ height: 400 }}>
+              <div className="rounded-lg border overflow-auto" style={{ height: 400 }}>
                 <MonacoEditor
                   height="100%"
                   language="cpp"
@@ -158,7 +182,7 @@ export function InterviewOverlay({
                   options={{
                     readOnly: true,
                     minimap: { enabled: false },
-                    fontSize: 16,
+                    fontSize: fontSize,
                     scrollBeyondLastLine: false,
                     wordWrap: "on",
                     lineNumbers: "on",
@@ -168,7 +192,7 @@ export function InterviewOverlay({
               </div>
             </div>
           )}
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

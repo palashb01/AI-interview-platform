@@ -49,9 +49,9 @@ export default function TopBar() {
           </span>
         </Link>
 
-        {/* Middle: Navigation Links */}
+        {/* Middle: Navigation Links (visible on large screens) */}
         {userEmail && (
-          <nav className="absolute left-1/2 transform -translate-x-1/2">
+          <nav className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <div className="flex items-center space-x-6">
               <Link
                 href="/past-interviews"
@@ -130,6 +130,20 @@ export default function TopBar() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {/* Mobile Navigation Links (only visible on mobile) */}
+                <div className="md:hidden">
+                  <DropdownMenuItem asChild>
+                    <Link href="/past-interviews" className="cursor-pointer">
+                      Past Interviews
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/interview/start" className="cursor-pointer">
+                      New Interview
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </div>
                 <DropdownMenuItem
                   className="text-red-600 dark:text-red-400 cursor-pointer"
                   onClick={() => signOut()}
