@@ -76,7 +76,7 @@ export default function TopBar() {
 
         {/* Middle: Navigation Links (visible on large screens) */}
         {userEmail && (
-          <nav className="absolute left-1/2 transform -translate-x-1/2">
+          <nav className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <div className="flex items-center space-x-6">
               <Link
                 href="/past-interviews"
@@ -133,14 +133,14 @@ export default function TopBar() {
         )}
 
         {/* Right: theme toggle + interview count + auth buttons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           {userEmail && remainingInterviews !== null && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 dark:border-indigo-500/10">
-                    <Zap className="h-4 w-4 text-indigo-500" />
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 dark:border-indigo-500/10">
+                    <Zap className="h-4 w-4 text-indigo-500 hidden sm:block" />
+                    <div className="flex items-center gap-1 sm:gap-1.5">
                       <span className="text-sm font-medium text-indigo-500">{remainingInterviews}</span>
                       <span className="text-xs text-muted-foreground">/5</span>
                     </div>
@@ -188,15 +188,21 @@ export default function TopBar() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {/* Mobile Navigation Links (only visible on mobile) */}
-                <div className="md:hidden">
+                {/* Mobile Navigation Links */}
+                <div className="block md:hidden">
                   <DropdownMenuItem asChild>
                     <Link href="/past-interviews" className="cursor-pointer">
                       Past Interviews
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/interview/start" className="cursor-pointer">
+                    <Link 
+                      href="/interview/start" 
+                      className={`cursor-pointer ${remainingInterviews === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={(e) => {
+                        if (remainingInterviews === 0) e.preventDefault();
+                      }}
+                    >
                       New Interview
                     </Link>
                   </DropdownMenuItem>
