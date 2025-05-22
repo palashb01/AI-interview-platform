@@ -32,12 +32,14 @@ A modern, full-stack web application to help you practice coding interviews with
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/your-username/ai-interview-platform.git
 cd ai-interview-platform
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 npm install
 # or
@@ -45,21 +47,26 @@ yarn install
 ```
 
 ### 3. Set Up Environment Variables
+
 Create a `.env.local` file in the root directory and add the following:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 GOOGLE_GENERATIVE_AI_API_KEY=your_ai_studio_key
 NEXT_PUBLIC_VAPI_WEB_TOKEN=your_vapi_client_key
 ```
+
 Get these values from your [Supabase project](https://app.supabase.com/).
 
 ### 4. Run the Development Server
+
 ```bash
 npm run dev
 # or
 yarn dev
 ```
+
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
 ---
@@ -121,4 +128,4 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-Made with ❤️ for developers who want to ace their coding interviews by Palash Baderia! 
+Made with ❤️ for developers who want to ace their coding interviews by Palash Baderia!

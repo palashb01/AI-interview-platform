@@ -59,12 +59,15 @@ export default function StartInterviewPage() {
         experience: parseInt(experience, 10),
       });
       router.push(`/interview/${data.interviewId}`);
-    } catch (err: any) {
+    } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 403) {
           setInterviewLimitError(true);
         } else {
-          setError(err.response?.data?.error || "An error occurred while starting the interview. Please try again.");
+          setError(
+            err.response?.data?.error ||
+              "An error occurred while starting the interview. Please try again."
+          );
         }
       } else {
         setError("An unexpected error occurred. Please try again.");
@@ -132,7 +135,10 @@ export default function StartInterviewPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-6"
               >
-                <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                <Alert
+                  variant="destructive"
+                  className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+                >
                   <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
                   <AlertDescription className="text-red-600 dark:text-red-400">
                     You have reached the maximum limit of 5 interviews.

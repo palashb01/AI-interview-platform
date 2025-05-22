@@ -141,7 +141,9 @@ export default function TopBar() {
                   <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 dark:border-indigo-500/10">
                     <Zap className="h-4 w-4 text-indigo-500 hidden sm:block" />
                     <div className="flex items-center gap-1 sm:gap-1.5">
-                      <span className="text-sm font-medium text-indigo-500">{remainingInterviews}</span>
+                      <span className="text-sm font-medium text-indigo-500">
+                        {remainingInterviews}
+                      </span>
                       <span className="text-xs text-muted-foreground">/5</span>
                     </div>
                   </div>
@@ -196,9 +198,9 @@ export default function TopBar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link 
-                      href="/interview/start" 
-                      className={`cursor-pointer ${remainingInterviews === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                    <Link
+                      href="/interview/start"
+                      className={`cursor-pointer ${remainingInterviews === 0 ? "opacity-50 pointer-events-none" : ""}`}
                       onClick={(e) => {
                         if (remainingInterviews === 0) e.preventDefault();
                       }}
