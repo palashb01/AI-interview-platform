@@ -33,6 +33,37 @@ export default function InterviewRoomPage() {
     endCall: () => void;
   }>(null);
   const router = useRouter();
+  useEffect(() => {
+    const checkInterviewLimit = async () => {
+      try {
+        const response = await fetch("/api/user/interview-count");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.interviewCount >= 5) {
+            console.log(
+              "[InterviewRoomPage] User has reached interview limit. Redirecting to home."
+            );
+            router.replace("/");
+          }
+        } else if (response.status === 401) {
+          console.log("[InterviewRoomPage] User not authenticated. Redirecting to home.");
+          router.replace("/");
+        } else {
+          // Log error but do not redirect for other server-side issues
+          console.error(
+            "[InterviewRoomPage] Failed to fetch interview count:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        // Log error but do not redirect for client-side fetch errors
+        console.error("[InterviewRoomPage] Error fetching interview count:", error);
+      }
+    };
+
+    checkInterviewLimit();
+  }, [router]); // router is a dependency
 
   // --- Status check ---
   useEffect(() => {

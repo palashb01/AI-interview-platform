@@ -6,11 +6,13 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { companies } from "@/lib/companies";
 import { motion } from "framer-motion";
-import { Building2, Clock, ArrowRight, Sparkles } from "lucide-react";
+import { Building2, Clock, ArrowRight, Sparkles, AlertCircle, Home } from "lucide-react";
 import dynamic from "next/dynamic";
 import * as interviewIllustration from "@/public/lottie/interview-illustration.json";
+import Link from "next/link";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -34,6 +36,7 @@ export default function StartInterviewPage() {
   const [experience, setExperience] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [interviewLimitError, setInterviewLimitError] = useState(false);
 
   // Validate numeric experience
   useEffect(() => {
@@ -49,14 +52,23 @@ export default function StartInterviewPage() {
   const handleStart = async () => {
     if (!companyId || error) return;
     setLoading(true);
+    setInterviewLimitError(false);
     try {
       const { data } = await axios.post("/api/interview/start", {
         companyId,
         experience: parseInt(experience, 10),
       });
       router.push(`/interview/${data.interviewId}`);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 403) {
+          setInterviewLimitError(true);
+        } else {
+          setError(err.response?.data?.error || "An error occurred while starting the interview. Please try again.");
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -113,6 +125,37 @@ export default function StartInterviewPage() {
                 Choose your target company and experience level
               </p>
             </motion.div>
+
+            {interviewLimitError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6"
+              >
+                <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                  <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                  <AlertDescription className="text-red-600 dark:text-red-400">
+                    You have reached the maximum limit of 5 interviews.
+                  </AlertDescription>
+                </Alert>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-4"
+                >
+                  <Link href="/" className="block">
+                    <Button
+                      variant="outline"
+                      className="w-full border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      <Home className="h-4 w-4 mr-2" />
+                      Return to Home
+                    </Button>
+                  </Link>
+                </motion.div>
+              </motion.div>
+            )}
 
             {/* Company Selection */}
             <motion.div variants={fadeInUp} className="space-y-4 mb-6">

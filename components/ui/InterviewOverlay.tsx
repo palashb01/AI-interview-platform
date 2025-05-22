@@ -43,10 +43,9 @@ export function InterviewOverlay({
   React.useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if(width < 500){
+      if (width < 500) {
         setFontSize(10);
-      }
-      else if (width < 640) {
+      } else if (width < 640) {
         setFontSize(12);
       } else if (width < 1024) {
         setFontSize(13);
@@ -56,8 +55,8 @@ export function InterviewOverlay({
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   React.useEffect(() => {
@@ -168,8 +167,8 @@ export function InterviewOverlay({
                     className="text-foreground text-sm sm:text-base max-h-[200px] overflow-y-auto overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: formattedQuestion }}
                     style={{
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: 'rgba(155, 155, 155, 0.5) transparent'
+                      scrollbarWidth: "thin",
+                      scrollbarColor: "rgba(155, 155, 155, 0.5) transparent",
                     }}
                   />
                 </div>

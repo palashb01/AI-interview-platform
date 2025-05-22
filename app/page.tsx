@@ -64,7 +64,10 @@ export default function Home() {
               >
                 Master Coding Interviews with AI
               </motion.h1>
-              <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">
+              <motion.p
+                variants={fadeInUp}
+                className="text-lg sm:text-xl text-gray-600 dark:text-gray-300"
+              >
                 Practice with our AI-powered interview platform. Get real-time feedback, improve
                 your coding skills, and ace your next technical interview.
               </motion.p>
@@ -117,7 +120,9 @@ export default function Home() {
                   {feature.icon}
                 </div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{feature.description}</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </motion.div>
@@ -136,19 +141,25 @@ export default function Home() {
               <div className="text-3xl sm:text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-1 sm:mb-2">
                 500+
               </div>
-              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">Coding Problems</div>
+              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                Coding Problems
+              </div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-4 sm:p-6">
               <div className="text-3xl sm:text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-1 sm:mb-2">
                 98%
               </div>
-              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">User Satisfaction</div>
+              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                User Satisfaction
+              </div>
             </motion.div>
             <motion.div variants={fadeInUp} className="p-4 sm:p-6">
               <div className="text-3xl sm:text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-1 sm:mb-2">
                 50+
               </div>
-              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">Companies Covered</div>
+              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                Companies Covered
+              </div>
             </motion.div>
           </div>
         </motion.div>
